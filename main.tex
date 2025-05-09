@@ -4,13 +4,16 @@
 
 \everymath{\displaystyle}
 
-
+\usepackage{graphicx}
+\usepackage{algorithm2e}
+\usepackage{algpseudocode}
 
 \begin{document}
 
 \frontmatter
 \KOMAoptions{open=left}
 \thispagestyle{empty}
+\RestyleAlgo{ruled}
 
 \include{title}
 \include{abstract}
@@ -20,10 +23,11 @@
 \KOMAoptions{open=right}
 
 \mainmatter
+
 \input{chapter-titlepage}
 \include{introduction}
-%\include{CHAPTER_FILE_NAME}
-
+\include{background}
+\include{experiments}
 
 %Adding appendices if needed
 \appendix
