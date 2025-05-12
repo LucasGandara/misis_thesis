@@ -108,7 +108,7 @@ In practice, the basic approach of iterating over the Bellman equation of the Q-
 \end{equation}
 Where $\theta$ are the weights of the network and $U(D)$ is the experience replay history.
 
-DQL algorithm also keep track of some observation in a $memory$ in order to use them to train the network. the full algorithm can be found in algorithm \ref{al: dqn}.
+DQL algorithm also keep track of some observation in a $memory$ in order to use them to train the network, this is used to avoid the time correlation and make the samples to be more independently and identically distributed. the full algorithm can be found in algorithm \ref{al: dqn}.
 
 \hfil\break
 \begin{algorithm}[H]
@@ -130,11 +130,72 @@ DQL algorithm also keep track of some observation in a $memory$ in order to use 
             Perform gradient descent step on $(y_j - Q(s_j, a_j;\Theta))^2 $ \\
             $s \leftarrow s'$
         }
-    } 
+    }
     \label{al: dqn}
 \end{algorithm}
 
+\hfil\break
 which mins that the  actor is updated by following the applying the chain rule to the expected return from the start distribution $J$ with respect to the actor parameters.
+
+Deep Q learning has a downside, it is not suitable for continuous action spaces. When the set of possible actions is finite and discrete, computing the maximum presents no difficulty. One can simply evaluate the Q-values for each action individually and determine the highest value. This also immediately identifies the action that maximizes the Q-value. However, when the action space is continuous, exhaustive evaluation becomes impractical, and solving the associated optimization problem is considerably complex. Employing a conventional optimization algorithm to compute $\max_a Q^*(s,a)$ would result in an extremely costly subroutine. Given that this computation would be required each time the agent selects an action within the environment, such an approach is infeasible. To address this limitation, Deep Deterministic Policy Gradient (DDPG) was introduced. DDPG is an off-policy algorithm that uses a deterministic policy and a Q-function to learn the optimal policy in continuous action spaces. It also employs a replay buffer to store experiences and uses a target network to stabilize learning.
+
+The Deterministic Policy Gradient (DPG)\cite{DPG} algorithm employs a parameterized actor function $\mu(s | \theta_\mu)$ that defines the current policy by deterministically associating states with specific actions. The critic function $Q(s, a)$ is learned through the Bellman equation, similar to Q-learning. The actor's parameters are updated by applying the chain rule to the expected return $J$ from the initial state distribution, ensuring an optimized policy adjustment. 
+
+Similar to Deep Q-Networks (DQN), a replay buffer is utilized to mitigate the challenge of avoiding the states to be time correlated. The replay buffer, denoted as $R$, is a finite-sized cache that stores transitions sampled from the environment following an exploration policy. Each transition, represented as the tuple $(s_t, a_t, r_t, s_{t+1})$, is added to the buffer. When the buffer reaches capacity, the oldest samples are removed to make space for new data. At every time step, the actor and critic are refined by uniformly sampling a mini batch from the buffer. Since Deep Deterministic Policy Gradient (DDPG) operates as an off-policy algorithm, the replay buffer can be substantially large, enabling the algorithm to leverage learning across a diverse set of uncorrelated transitions. DDPG works as an actor critic algorithm, where the actor is responsible for selecting actions based on the current policy, while the critic evaluates the actions taken by the actor. The critic is trained to minimize the mean squared error between the predicted Q-values and the target Q-values, which are computed using the Bellman equation.
+
+Consider a neural network, $Q_{\phi}(s,a)$, as a policy approximator, where $\phi$ represents its parameters. Suppose we have gathered a dataset $\mathcal{D}$ comprising transitions $(s,a,r,s',d)$, with $d$ indicating whether the state $s'$ is terminal. One can define the mean squared Bellman error function, which provides an estimate of how well $Q_{\phi}$ adheres to the Bellman equation\ref{eq: q-value-bellman-equation}.
+
+\begin{equation*}
+    L(\phi, \mathcal{D}) = \mathbb{E}_{(s,a,r,s',d)\sim\mathcal{D}}\left[\left(Q_{\phi}(s,a) - y(r,s',d)\right)^2\right]
+\end{equation*}
+
+where $y(r,s',d)$ is the target value, defined as:
+\begin{equation*}
+    y(r,s',d) = r + \gamma(1-d)\max_{a'} Q_{\phi}(s',a')
+\end{equation*}
+
+DDPG algorithm also applies a target network to stabilize the learning process. The target networks are copies of the actor and critic networks, which are updated slowly to ensure stability during training. The target networks are updated using a soft update mechanism, where the target parameters are updated as follows:
+
+\begin{equation*}
+    \theta_{\text{targ}} \leftarrow \tau\theta_{\text{targ}} + (1-\tau)\theta
+\end{equation*}
+
+The actor or so called \emph{policy} is updated by following the applying the chain rule to the expected return from the start distribution $J$ with respect to the actor parameters. The objective is to learn a deterministic policy, $ \mu_{\theta}(s) $, that selects the action maximizing $ Q_{\phi}(s,a) $. Given that the action space is continuous and assuming that the Q-function is differentiable with respect to the action, we can apply gradient ascent—focusing solely on policy parameters—to find the optimal solution.
+
+\begin{equation*}
+    \max_{\theta} \mathbb{E}_{s\thicksim\mu_0}\left[Q_{\phi}(s,\mu_{\theta}(s))\right]
+\end{equation*}
+
+The DDPG algorithm is summarized in Algorithm \ref{al: ddpg}.
+
+\begin{algorithm}[!ht]
+    \caption{Deep Deterministic Policy Gradient Algorithm}
+    \label{al: ddpg}
+    Input: initial policy parameters $\theta$, Q-function parameters $\phi$, empty replay buffer $\mathcal{D}$\;
+    Set target parameters equal to main parameters $\theta_{\text{targ}} \leftarrow \theta$, $\phi_{\text{targ}} \leftarrow \phi$\;
+    \Repeat{convergence}{
+        Observe state $s$ and select action $a = \text{clip}(\mu_\theta(s) + \epsilon, a_{\text{Low}}, a_{\text{High}})$, where $\epsilon \sim \mathcal{N}$\;
+        Execute $a$ in the environment\;
+        Observe next state $s'$, reward $r$, and done signal $d$ to indicate whether $s'$ is terminal\;
+        Store $(s,a,r,s',d)$ in replay buffer $\mathcal{D}$\;
+        If it's terminal, reset the environment\;
+        \If{It's time to update}{
+            \For{however many updates}{
+                Rnadomly sample a batch of transitions, $B = \{(s,a,r,s',d)\}$ from $\mathcal{D}$\;
+                Compute target:
+                \hspace{3.5cm}$y(r,s',d) = r + \gamma(1-d)\max_{a'} Q_{\phi_{\text{targ}}}(s',a')$\;
+                Update Q-function by one step of gradient descent using\;
+                \hspace{3.5cm}$\nabla_{\phi}\frac{1}{|B|}\sum_{(s,a,r,s',d)\in B}(Q_{\phi}(s,a) - y(r,s',d))^2$\;
+                Update policy by one step of gradient ascent using:
+                \hspace{3.5cm}$\nabla_\theta\frac{1}{|B|}\sum_{s\in B}Q_{\phi}(s,\mu_\theta(s))$\;
+                Update target networks with:
+                \hspace{3.5cm}$\phi_{\text{targ}} \leftarrow \rho\phi_{\text{targ}} + (1-\rho)\phi$\;
+                \hspace{3.5cm}$\theta_{\text{targ}} \leftarrow \rho\theta_{\text{targ}} + (1-\rho)\theta$\;
+            }
+        } 
+    }
+\end{algorithm}
+\clearpage
 
 \section{Twin Delayed DDPG (TD3)}
 Deep Deterministic Policy Gradient (DDPG) can sometimes achieve strong performance; however, it tends to be sensitive to hyperparameter and other tuning aspects. A common failure mode arises when the learned Q-function significantly overestimates Q-values, causing the policy to exploit these inaccuracies, ultimately leading to instability. Twin Delayed Deep Deterministic Policy Gradient mitigates this issue through three fundamental techniques:
@@ -177,33 +238,33 @@ TD3 employs an off-policy approach to train a deterministic policy. Since determ
 
 \begin{algorithm}[ht]
 \caption{Twin Delayed DDPG}
-\label{al: td3}
-Input: initial policy parameters $\theta$, Q-function parameters $\phi_1$, $\phi_2$, empty replay buffer $\mathcal{D}$\;
-Set target parameters equal to main parameters $\theta_{\text{targ}} \leftarrow \theta$, $\phi_{\text{targ},1} \leftarrow \phi_1$, $\phi_{\text{targ},2} \leftarrow \phi_2$\;
-\Repeat{convergence}{
-    Observe state $s$ and select action $a = \text{clip}(\mu_\theta(s) + \epsilon, a_{\text{Low}}, a_{\text{High}})$, where $\epsilon \sim \mathcal{N}$\;
-    Execute $a$ in the environment\;
-    Observe next state $s'$, reward $r$, and done signal $d$ to indicate whether $s'$ is terminal\;
-    Store $(s,a,r,s',d)$ in replay buffer $\mathcal{D}$\;
-    \If{it's time to update}{
-        \For{$j$ in range(however many updates)}{
-            Randomly sample a batch of transitions, $B = \{(s,a,r,s',d)\}$ from $\mathcal{D}$\;
-            Compute target actions\;
-            $a'(s') = \text{clip}(\mu_{\text{targ}}(s') + \text{clip}(\epsilon, -c, c), a_{\text{Low}}, a_{\text{High}})$, $\epsilon \sim \mathcal{N}(0,\sigma)$\;
-            Compute targets\;
-            $y(r,s',d) = r + \gamma(1-d)\min_{i=1,2} Q_{\phi_{\text{targ},i}}(s',a'(s'))$\;
-            Update Q-functions by one step of gradient descent using\;
-            $\nabla_{\phi_i}\frac{1}{|B|}\sum_{(s,a,r,s',d)\in B}(Q_{\phi_i}(s,a) - y(r,s',d))^2$ for $i=1,2$\;
-            \If{$j$ mod policy\_delay $= 0$}{
-                Update policy by one step of gradient ascent using\;
-                $\nabla_\theta\frac{1}{|B|}\sum_{s\in B}Q_{\phi_1}(s,\mu_\theta(s))$\;
-                Update target networks with\;
-                $\phi_{\text{targ},i} \leftarrow \rho\phi_{\text{targ},i} + (1-\rho)\phi_i$ for $i=1,2$\;
-                $\theta_{\text{targ}} \leftarrow \rho\theta_{\text{targ}} + (1-\rho)\theta$\;
+    \label{al: td3}
+    Input: initial policy parameters $\theta$, Q-function parameters $\phi_1$, $\phi_2$, empty replay buffer $\mathcal{D}$\;
+    Set target parameters equal to main parameters $\theta_{\text{targ}} \leftarrow \theta$, $\phi_{\text{targ},1} \leftarrow \phi_1$, $\phi_{\text{targ},2} \leftarrow \phi_2$\;
+    \Repeat{convergence}{
+        Observe state $s$ and select action $a = \text{clip}(\mu_\theta(s) + \epsilon, a_{\text{Low}}, a_{\text{High}})$, where $\epsilon \sim \mathcal{N}$\;
+        Execute $a$ in the environment\;
+        Observe next state $s'$, reward $r$, and done signal $d$ to indicate whether $s'$ is terminal\;
+        Store $(s,a,r,s',d)$ in replay buffer $\mathcal{D}$\;
+        \If{it's time to update}{
+            \For{$j$ in range(however many updates)}{
+                Randomly sample a batch of transitions, $B = \{(s,a,r,s',d)\}$ from $\mathcal{D}$\;
+                Compute target actions\;
+                $a'(s') = \text{clip}(\mu_{\text{targ}}(s') + \text{clip}(\epsilon, -c, c), a_{\text{Low}}, a_{\text{High}})$, $\epsilon \sim \mathcal{N}(0,\sigma)$\;
+                Compute targets\;
+                $y(r,s',d) = r + \gamma(1-d)\min_{i=1,2} Q_{\phi_{\text{targ},i}}(s',a'(s'))$\;
+                Update Q-functions by one step of gradient descent using\;
+                $\nabla_{\phi_i}\frac{1}{|B|}\sum_{(s,a,r,s',d)\in B}(Q_{\phi_i}(s,a) - y(r,s',d))^2$ for $i=1,2$\;
+                \If{$j$ mod policy\_delay $= 0$}{
+                    Update policy by one step of gradient ascent using\;
+                    $\nabla_\theta\frac{1}{|B|}\sum_{s\in B}Q_{\phi_1}(s,\mu_\theta(s))$\;
+                    Update target networks with\;
+                    $\phi_{\text{targ},i} \leftarrow \rho\phi_{\text{targ},i} + (1-\rho)\phi_i$ for $i=1,2$\;
+                    $\theta_{\text{targ}} \leftarrow \rho\theta_{\text{targ}} + (1-\rho)\theta$\;
+                }
             }
         }
     }
-}
 \end{algorithm}
 \clearpage
 

@@ -1,5 +1,6 @@
 {
     "cSpell.words": [
+        "approximator",
         "convolutional",
         "Cybertruck",
         "DDPG",
@@ -7,6 +8,7 @@
         "Multibody",
         "SARSA",
         "Simbody",
-        "TRPO"
+        "TRPO",
+        "Turtlebot"
     ]
 }
