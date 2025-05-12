@@ -1,0 +1,11 @@
+% $Id: results. $
+% !TEX root = main.tex
+
+\chapter{Results}
+\subsection{Carla}
+With CARLA experiment it was possible to train up to 32.000 iterations which took around 32 hours of training, however, due to technical difficulties related with the hardware, and the model being computationally expensive, it was not possible to train any further, the simulator requires 6Gb of video memory out of the 8 that comes with the Nvidia 4060 ti, which only leaves 2Gb of memory to train. Even though as shown in figure the reward seems to go up, the variance through episodes is too high and the agent doesn't take any action that from a human perspective is ideal. From this point, it was decided to not move forward this simulator.
+
+\begin{figure}[ht]
+    \includegraphics[width=0.8\textwidth]{./figures/CARLA_ddpg_14k_iters.png}
+    \caption{CARLA TD3 Cybertruck train log, 14000 iterations.}
+\end{figure}

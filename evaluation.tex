@@ -4,12 +4,21 @@
 \chapter{Evaluation}
 \label{cha:experiments}
 \section{Setup}
-Many options were taken in count while selecting environment to apply the transfer learning technique.
+The experiments were run using the Gazebo ros simulator and Carla simulator on a computer with the following specifications:
+\begin{itemize}
+    \item CPU: AMD Ryzen 9 8945HS 
+    \item RAM: 16GB
+    \item GPU: NVIDIA GeForce GTX 4060 Ti
+    \item OS: Ubuntu 20.04 LTS 
+    \item Ros Version: Noetic
+    \item Python Version: 3.9
+\end{itemize}
+As a machine learning framework, Tensorflow 2.18\footnote{Tensorflow: \url{https://www.tensorflow.org}} was used.
 
 \subsection{Carla}
-The first one was CARLA \cite{CARLA}, which provides a realistic and dynamic context for autonomous driving research. In the frame of the MDP a reward signal was chosen to incentivize the agent to maintain a target speed of 50 km/h. The simulation environment for this study is the CARLA urban driving simulator.
+Many options were taken in count while selecting environment to apply the transfer learning technique. The first one was CARLA \cite{CARLA}, which provides a realistic and dynamic context for autonomous driving research. In the frame of the MDP a reward signal was chosen to incentivize the agent to maintain a target speed of 50 km/h. The simulation environment for this study is the CARLA urban driving simulator.
 
-Given that this document is employing a Twin Delayed Deep Deterministic Policy Gradient for decision-making, the action space has three continuous signals that can be powered: steering the vehicle, Throttle the vehicle, or break, CARLA simulator provides a way to manually shift gears and press the hand break, however in this experiment the car is only going to be able to move forward and the the gear shifting is going to be automatic. The vehicle is going to have one sensor only which is going to be an rgb frontal camera attached to the roof of the vehicle which is going to produce images of 3 rgb channels of 480 x 640 pixels. The reward function is designed to encourage the agent to reach and sustain the desired speed of $50km/h$ while navigating through the environment. This approach ensures that the agent learns to balance the need for speed with the challenges of urban driving, such as handling turns and avoiding obstacles. To achieve this, the agent receives a penalty of $-1$ for every step taken that is not above the $50km/h$, and gets a penalty of $-200$ for a collision and a negative reward of $-15$ every time it changes lane in a forbidden area.
+Given that this thesis is employing a Twin Delayed Deep Deterministic Policy Gradient for decision-making, the action space has three continuous signals that can be powered: steering the vehicle, Throttle the vehicle, or break, CARLA simulator provides a way to manually shift gears and press the hand break, however in this experiment the car is only going to be able to move forward and the the gear shifting is going to be automatic. The vehicle is going to have one sensor only which is going to be an rgb frontal camera attached to the roof of the vehicle which is going to produce images of 3 rgb channels of 480 x 640 pixels. The reward function is designed to encourage the agent to reach and sustain the desired speed of $50km/h$ while navigating through the environment. This approach ensures that the agent learns to balance the need for speed with the challenges of urban driving, such as handling turns and avoiding obstacles. To achieve this, the agent receives a penalty of $-1$ for every step taken that is not above the $50km/h$, and gets a penalty of $-200$ for a collision and a negative reward of $-15$ every time it changes lane in a forbidden area.
 
 \begin{figure}[!ht]
     \centering
@@ -38,7 +47,7 @@ The agent in the simulator was chosen to be a Cybertruck, model provided by the 
 \end{figure}
 
 \subsection{Gazebo ROS}
-The next environment was developed in Gazebo simulator and the Turtlebot3 mobile base shown in figure \ref{fig: tb3 model burger}, a differential mobile base with a Lidar\footnote{Laser Distance Sensor: https://emanual.robotis.com/docs/en/platform/turtlebot3/appendix\_lds\_01/} to sense the environment on a range of 24 degrees around the mobile base. The Turtlebot3 is a versatile and widely used platform in robotics research and education, making it suitable for various applications, including autonomous navigation and mapping\cite{}.
+The next environment was developed in Gazebo simulator and the Turtlebot3 mobile base shown in figure \ref{fig: tb3 model burger}, a differential mobile base with a Lidar\footnote{Laser Distance Sensor: https://emanual.robotis.com/docs/en/platform/turtlebot3/appendix\_lds\_01/} to sense the environment on a range of 24 degrees around the mobile base. The Turtlebot3 is a versatile and widely used platform in robotics research and education, making it suitable for various applications, including autonomous navigation and mapping\footnote{Turtlebot3: \url{https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/}}.
 
 As mentioned in algorithm \ref{al: td3}, two architecture of neural networks has to be constructed, one to perform as a critic and the other one as an actor/policy.
 
@@ -104,9 +113,17 @@ Once the two agents are trained, The expert agents have to transfer the knowledg
 Where the $Ultimate performance$ means the return of the episode or the discounted cumulative reward achieved by the agent at the end of the episode.
 
 \section{Experiments}
-With CARLA experiment it was possible to train up to 32.000 iterations, however, due to technical difficulties related with the hardware, and the model being computationally expensive, it was not possible to train any further. and even though as shown in figure the reward seems to go up, the variance through episodes is high. From this point, it was decided to change the simulator and hence the environment.
+\subsection{Carla}
+CARLA simulations were performed in the Town 5 environment shown in figure \ref{fig:town 5 carla}. The agent was trained to learn how to traverse the environment and achieve the most reward possible while maintaining a speed of $50km/h$. The only metric used to measure the performance of the agent was the reward function.
 
-\begin{figure}[ht]
-    \includegraphics[width=0.8\textwidth]{./figures/CARLA_ddpg_14k_iters.png}
-    \caption{CARLA DDPG Cybertruck train log, 14000 iterations.}
-\end{figure}
+\subsection{Gazebo Roundabout}
+The Gazebo simulations were divided into four parts:
+
+\begin{enumerate}
+    \item Training an agent to learn how to traverse the environment on the right side of the roundabout.
+    \item Training an agent to learn how to traverse the environment on the left side of the roundabout. The reward function was slightly modified to include a penalty of $-1$ for each step the agent takes on the opposite side of the road.
+    \item Training an expert agent that extends its learning to traverse the environment on the opposite side of the road.
+    \item Training a transfer learning agent using the expert agent's critic and actor models.
+\end{enumerate}
+
+The metrics used to measure the performance of the agents were the average reward per episode, the number of steps taken, the average reward in the past 50 episode, the Q values for each network, the average loss value for each network and Q value difference.

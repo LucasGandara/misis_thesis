@@ -315,7 +315,7 @@ Likewise, ROS has a package called \emph{gazebo\_ros} that allows its integratio
     \label{fig: gazebo showcase}
 \end{figure}
 
-\section{TRANSFER LEARNING}
+\section{Transfer Learning}
 There are several ways of transfer learning, numerous approaches have been explored to enhance reinforcement learning (RL) by incorporating different forms of supervision, often within distinct problem contexts. There are other techniques related to TL, examining their differences and connections may help to better define the relationship between TL and these approaches. \emph{Discriminator Actor-critic}\cite{imitation_learning} is one of them, they aim to train a policy by demonstrating the target actor an expert policy with few samples. This imitation could be more aggressive where the target actor is trained in a supervised manner with an expert policy\cite{imitation_learning_supervised}. Other form of transfer learning is \emph{Hierarchical Reinforcement Learning} (HRL) that has been proposed to focus on tasks where the actions space can be broken down into more simple action spaces to form a higher level macro of actions. Some algorithms of this kind could be Feudal learning\cite{feudal_rd}.
 
 \emph{Multi-Agent Reinforcement Learning} or MARL is also another group of transfer learning algorithms, in this kind of framework, the MDP is considered with multiple actors interacting with the environment simultaneously and is focused to solve tasks that are not feasible to be learned by a single agent\cite{multi_agent_rl}.
