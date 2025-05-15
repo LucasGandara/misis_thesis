@@ -18,8 +18,8 @@ The objective in an MDP is to find a policy $\pi: S \rightarrow A$ that maximize
 A visual representation of an MDP is provided in Figure \ref{fig:MDP Diagram}, illustrating the interaction between states, actions, rewards, and transitions.
 
 \begin{figure}[ht]
-    \includegraphics[width=\linewidth]{./figures/Agent-Environment.png}
     \centering
+    \includegraphics[width=\linewidth]{./figures/Agent-Environment.png}
     \caption[MDP]{Markov decision process. Took from: \cite{Sutton2018}}
     \label{fig:MDP Diagram}
 \end{figure}
@@ -271,8 +271,8 @@ TD3 employs an off-policy approach to train a deterministic policy. Since determ
 \section{CARLA: An Open-Source Urban Driving \\simulator}
 
 \begin{figure}[ht]
-    \includegraphics[width=\linewidth]{./figures/Carla-simulator.png}
     \centering
+    \includegraphics[width=\linewidth]{./figures/Carla-simulator.png}
     \caption[CARLA Simulator]{CARLA Simulator benchmark}
     \label{fig:CARLA Simulaor}
 \end{figure}
@@ -291,8 +291,8 @@ One of CARLA's significant contributions is its extensive benchmark suite, which
 ROS (Robot Operating System) is an open source framework for developing specialized robotics software. It consists of a series of libraries, conventions and tools to create a robust specialized work environment. It has a variety of features, the name operating system (OS) is due to the fact that it has functionalities such as hardware abstraction, message passing between processes, among others, similar to that of an OS as shown in figure \ref{fig: ros as a framework}. However, a more appropriate name would be meta operating system since ROS operates on an operating system such as Linux \cite{ros_web} One of its most important parts is the communication infrastructure. It offers an interface for transferring information in the form of messages; usually this communication between components is one of the first needs when creating any robot.
 
 \begin{figure}[ht]
-    \includegraphics[width=0.6\textwidth]{./figures/ROS_FRAMEWORK.png}
     \centering
+    \includegraphics[width=0.6\textwidth]{./figures/ROS_FRAMEWORK.png}
     \caption{Diagram of ROS as a meta operating system.}
     \label{fig: ros as a framework}
 \end{figure}
@@ -300,8 +300,8 @@ ROS (Robot Operating System) is an open source framework for developing speciali
 Its basic operation is best explained as a graph architecture. In a simplified way, ROS allows you to create communication nodes, which are executable files with ROS commands inside a ROS package. These nodes communicate through topics. In turn, a topic can \emph{publish} messages for another topic to \emph{subscribe} to and vice versa. The ROS Master node will start with the first initialized node and will be in charge of managing the other nodes as shown in figure \ref{fig: ros nodes graph}.
 
 \begin{figure}[ht]
-    \includegraphics[width=0.5\textwidth]{./figures/ros_nodes.png}
     \centering
+    \includegraphics[width=0.5\textwidth]{./figures/ros_nodes.png}
     \caption{Computational Graph of a ROS node.}
     \label{fig: ros nodes graph}
 \end{figure}
@@ -309,8 +309,8 @@ Its basic operation is best explained as a graph architecture. In a simplified w
 Likewise, ROS has a package called \emph{gazebo\_ros} that allows its integration with Gazebo\cite{gazebo_url}, a simulator (shown in figure \ref{fig: gazebo showcase}) that is largely faithful to reality since it include in its software physics engines such as ODE\footnote{ODE physics simulator: \url{https://www.ode.org/}},Bullet\footnote{Bullet physics engine: \url{https://pybullet.org/wordpress}}, Simbody\footnote{Multibody physics API: \url{https://objectivesimtk.org/projects/simbody}} and DART\footnote{Dynamic Animation and Robotics Toolkit: \url{https://dartsim.github.io/}}. Because of this, the state of the simulated environment is highly accurate and always available, the covariances of the measurements when simulating sensors are amplified and Gaussian noise is added to the observed data, thus creating realistic scenarios that allow simulations to be carried out and data to be taken similar to that which would be obtained in the real environment.
 
 \begin{figure}[ht]
-    \includegraphics[width=0.7\textwidth]{./figures/gazebo_show.png}
     \centering
+    \includegraphics[width=0.7\textwidth]{./figures/gazebo_show.png}
     \caption{Gazebo showcase: https://gazebosim.org/showcase.}
     \label{fig: gazebo showcase}
 \end{figure}

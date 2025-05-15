@@ -3,7 +3,13 @@
 
 \chapter{Evaluation}
 \label{cha:experiments}
-\section{Setup}
+
+In this chapter we turn our attention to the evaluation of the proposed transfer learning approach to develop agents with the capability to have general knowledge. We first describe the experimental setup, including the environments used for training and testing the agents (\fref{sec:setup}). Then, we present the results of the experiments, including the performance of the agents in both environments and the effectiveness of transfer learning in improving their performance. Finally, we discuss the implications of these results and their significance for future research in this area.
+
+
+\section{Experimental Setup}
+\label{sec:setup}
+
 The experiments were run using the Gazebo ros simulator and Carla simulator on a computer with the following specifications:
 \begin{itemize}
     \item CPU: AMD Ryzen 9 8945HS 
@@ -13,41 +19,48 @@ The experiments were run using the Gazebo ros simulator and Carla simulator on a
     \item Ros Version: Noetic
     \item Python Version: 3.9
 \end{itemize}
-As a machine learning framework, Tensorflow 2.18\footnote{Tensorflow: \url{https://www.tensorflow.org}} was used.
+As a machine learning framework, we used Tensorflow 2.18.\footnote{Tensorflow: \url{https://www.tensorflow.org}}
+
 
 \subsection{Carla}
+\label{sec:carla}
+
 Many options were taken in count while selecting environment to apply the transfer learning technique. The first one was CARLA \cite{CARLA}, which provides a realistic and dynamic context for autonomous driving research. In the frame of the MDP a reward signal was chosen to incentivize the agent to maintain a target speed of 50 km/h. The simulation environment for this study is the CARLA urban driving simulator.
 
 Given that this thesis is employing a Twin Delayed Deep Deterministic Policy Gradient for decision-making, the action space has three continuous signals that can be powered: steering the vehicle, Throttle the vehicle, or break, CARLA simulator provides a way to manually shift gears and press the hand break, however in this experiment the car is only going to be able to move forward and the the gear shifting is going to be automatic. The vehicle is going to have one sensor only which is going to be an rgb frontal camera attached to the roof of the vehicle which is going to produce images of 3 rgb channels of 480 x 640 pixels. The reward function is designed to encourage the agent to reach and sustain the desired speed of $50km/h$ while navigating through the environment. This approach ensures that the agent learns to balance the need for speed with the challenges of urban driving, such as handling turns and avoiding obstacles. To achieve this, the agent receives a penalty of $-1$ for every step taken that is not above the $50km/h$, and gets a penalty of $-200$ for a collision and a negative reward of $-15$ every time it changes lane in a forbidden area.
 
-\begin{figure}[!ht]
+\begin{figure}[ht]
     \centering
-
-    \subfloat[][Carla catalogue Townt 5 Overview.]{
-        \includegraphics[width=0.6\textwidth]{figures/town5_carla_view1.png}
-    }
-
-    \subfloat[][Carla catalogue Townt 5 Overview.]{
-        \includegraphics[width=0.6\textwidth]{figures/town5_carla_top_view.png}
-    }
-
+    \begin{subfigure}[t]{0.49\textwidth}
+       \centering
+       \includegraphics[width=\textwidth]{figures/town5_carla_view1.png}
+       \caption{Carla catalogue Town 5 Overview.}
+       \label{fig:town5carla_view1}
+    \end{subfigure}
+~%\quad
+    \begin{subfigure}[t]{0.49\textwidth}
+       \centering
+       \includegraphics[width=\textwidth]{figures/town5_carla_top_view}
+       \caption{Carla catalogue Townt 5 Overview.}
+       \label{fig:town5carla_view2}
+    \end{subfigure}
     \caption{Town 5 of Carla catalogue.}
-    \label{fig:town 5 carla}
+    \label{fig:town5carla}
 \end{figure}
 
 \cite[Xception]{XCeption} is a 71 layer deep convolutional neural network which has over 23 millions trainable parameters. It was utilized to act as a policy function of the DDPG algorithm, for the critic network, a 4 layered of convolutional model followed by 2 dense layers was used to predict the value function of the actor in the environment.
 
-The agent in the simulator was chosen to be a Cybertruck, model provided by the simulator as shown in figure \ref{cybwertruck carla}. CARLA provides in its catalogue a list of maps for use. For the experiment it was used the \ref{fig:town 5 carla} is an urban area nestled against conifer-covered hills, featuring a raised highway and expansive multilane roads with several major intersections.
+The agent in the simulator was chosen to be a Cybertruck, model provided by the simulator as shown in \fref{fig:cybwertruck_carla}. CARLA provides in its catalogue a list of maps for use. For the experiment it was used the \fref{fig:town5carla} is an urban area nestled against conifer-covered hills, featuring a raised highway and expansive multilane roads with several major intersections.
 
-\begin{figure}[ht]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=0.8\textwidth]{./figures/tesla_cybertruck_carla.png}
     \caption{Cybertruck model in Carla environment in Town 5.}
-    \label{cybwertruck carla}
+    \label{fig:cybwertruck_carla}
 \end{figure}
 
 \subsection{Gazebo ROS}
-The next environment was developed in Gazebo simulator and the Turtlebot3 mobile base shown in figure \ref{fig: tb3 model burger}, a differential mobile base with a Lidar\footnote{Laser Distance Sensor: https://emanual.robotis.com/docs/en/platform/turtlebot3/appendix\_lds\_01/} to sense the environment on a range of 24 degrees around the mobile base. The Turtlebot3 is a versatile and widely used platform in robotics research and education, making it suitable for various applications, including autonomous navigation and mapping\footnote{Turtlebot3: \url{https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/}}.
+The next environment was developed in Gazebo simulator and the Turtlebot3 mobile base shown in figure \ref{fig: tb3 model burger}, a differential mobile base with a Lidar\footnote{Laser Distance Sensor: https://emanual.robotis.com/docs/en/platform/turtlebot3/appendix\_lds\_01/} to sense the environment on a range of 24 degrees around the mobile base. The Turtlebot3 is a versatile and widely used platform in robotics research and education, making it suitable for various applications, including autonomous navigation and mapping.\footnote{Turtlebot3: \url{https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/}}
 
 As mentioned in algorithm \ref{al: td3}, two architecture of neural networks has to be constructed, one to perform as a critic and the other one as an actor/policy.
 
@@ -93,8 +106,8 @@ By integrating these factors with adjustable weight parameters, the function pro
 To emulate the driving paradigm change, it was built an environment of a roundabout with line tracks emulated by walls as shown in figure \ref{fig: gazebo tb3 environment}. The blue layer represent what the robot "sees" through the Lidar scans. For each episode the robot is going to start from one side of the environment and should learn to go to the other side of the environment following only one track of the road, then, another agent is going to be trained with a brand new actor and critic models to follow the other track of the road so at the end there are two agents, one that knows how to traverse the environment following the right side and the other ones knows the other paradigm.
 
 \begin{figure}[ht]
-    \includegraphics[width=0.7\textwidth]{./figures/experiment_environment_gazebo.png}
     \centering
+    \includegraphics[width=0.7\textwidth]{./figures/experiment_environment_gazebo.png}
     \caption{Turtlebot 3 in Gazebo simulator with roundabout environment.}
     \label{fig: gazebo tb3 environment}
 \end{figure}
@@ -110,20 +123,4 @@ Once the two agents are trained, The expert agents have to transfer the knowledg
     \end{split}
 \end{equation}
 
-Where the $Ultimate performance$ means the return of the episode or the discounted cumulative reward achieved by the agent at the end of the episode.
-
-\section{Experiments}
-\subsection{Carla}
-CARLA simulations were performed in the Town 5 environment shown in figure \ref{fig:town 5 carla}. The agent was trained to learn how to traverse the environment and achieve the most reward possible while maintaining a speed of $50km/h$. The only metric used to measure the performance of the agent was the reward function.
-
-\subsection{Gazebo Roundabout}
-The Gazebo simulations were divided into four parts:
-
-\begin{enumerate}
-    \item Training an agent to learn how to traverse the environment on the right side of the roundabout.
-    \item Training an agent to learn how to traverse the environment on the left side of the roundabout. The reward function was slightly modified to include a penalty of $-1$ for each step the agent takes on the opposite side of the road.
-    \item Training an expert agent that extends its learning to traverse the environment on the opposite side of the road.
-    \item Training a transfer learning agent using the expert agent's critic and actor models.
-\end{enumerate}
-
-The metrics used to measure the performance of the agents were the average reward per episode, the number of steps taken, the average reward in the past 50 episode, the Q values for each network, the average loss value for each network and Q value difference.
+Where the $\text{Ultimate performance}$ means the return of the episode or the discounted cumulative reward achieved by the agent at the end of the episode. On each experiment, there are some metrics that are going to be saved to measure the performance of the agent such as the average reward per episode, the maximum reward achieved for episode, the time taken to complete the stage without crashing and the loss values accumulated by the networks during the training. The average reward is calculated by taking the mean of the rewards obtained in the last 50 episodes, while the maximum reward is determined by identifying the highest reward achieved in any episode. The time taken to complete the stage is measured in seconds, and the loss values are recorded for both the actor and critic networks during training.
