@@ -116,10 +116,11 @@ To emulate the driving paradigm change, it was built an environment of a roundab
 Once the two agents are trained, The expert agents have to transfer the knowledge  to the new agents via transfer learning using equations \ref{eq: pre train gradient pi} and \ref{eq: pre train gradient Q} and measuring the transferred knowledge by 3 metrics given by the following equations:
 
 \begin{equation}
+    \centering
     \begin{split}
         \text{Transfer ratio} & = \frac{\text{Ultimate performance with TL}}{\text{Ultimate performance with no TL}} \\
-        Mastery               & = \text{Ultimate performance of the} agent.                                          \\
-        Pedagogy              & = \text{How many less episodes the TL agent takes than a 0 trained agent.}
+        Mastery               & = \text{Ultimate performance of the agent.}                                          \\
+        Pedagogy              & = \text{How many less episodes the TL took.}
     \end{split}
 \end{equation}
 

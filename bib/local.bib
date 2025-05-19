@@ -1,9 +1,3 @@
-@techReport{,
-   abstract = {We introduce CARLA, an open-source simulator for autonomous driving research. CARLA has been developed from the ground up to support development , training, and validation of autonomous urban driving systems. In addition to open-source code and protocols, CARLA provides open digital assets (urban layouts, buildings, vehicles) that were created for this purpose and can be used freely. The simulation platform supports flexible specification of sensor suites and environmental conditions. We use CARLA to study the performance of three approaches to autonomous driving: a classic modular pipeline, an end-to-end model trained via imitation learning, and an end-to-end model trained via reinforcement learning. The approaches are evaluated in controlled scenarios of increasing difficulty, and their performance is examined via metrics provided by CARLA, illustrating the platform's utility for autonomous driving research.},
-   author = {Alexey Dosovitskiy and German Ros and Felipe Codevilla and Antonio López and Vladlen Koltun},
-   keywords = {Autonomous driving,sensorimotor control,simulation},
-   title = {CARLA: An Open Urban Driving Simulator}
-}
 @article{XCeption,
    abstract = {We present an interpretation of Inception modules in convolutional neural networks as being an intermediate step in-between regular convolution and the depthwise separable convolution operation (a depthwise convolution followed by a pointwise convolution). In this light, a depthwise separable convolution can be understood as an Inception module with a maximally large number of towers. This observation leads us to propose a novel deep convolutional neural network architecture inspired by Inception, where Inception modules have been replaced with depthwise separable convolutions. We show that this architecture, dubbed Xception, slightly outperforms Inception V3 on the ImageNet dataset (which Inception V3 was designed for), and significantly outperforms Inception V3 on a larger image classification dataset comprising 350 million images and 17,000 classes. Since the Xception architecture has the same number of parameters as Inception V3, the performance gains are not due to increased capacity but rather to a more efficient use of model parameters.},
    author = {François Chollet},
@@ -134,16 +128,6 @@
    url = {http://arxiv.org/abs/1502.05477},
    year = {2015}
 }
-@inproceedings{Konda1999,
-   author = {Vijay Konda and John Tsitsiklis},
-   editor = {S Solla and T Leen and K Müller},
-   booktitle = {Advances in Neural Information Processing Systems},
-   publisher = {MIT Press},
-   title = {Actor-Critic Algorithms},
-   volume = {12},
-   url = {https://proceedings.neurips.cc/paper_files/paper/1999/file/6449f44a102fde848669bdd9eb6b76fa-Paper.pdf},
-   year = {1999}
-}
 @inproceedings{vanSeijen2009,
    abstract = {This paper presents a theoretical and empirical analysis of Expected Sarsa, a variation on Sarsa, the classic on-policy temporal-difference method for model-free reinforcement learning. Expected Sarsa exploits knowledge about stochasticity in the behavior policy to perform updates with lower variance. Doing so allows for higher learning rates and thus faster learning. In deterministic environments, Expected Sarsas updates have zero variance, enabling a learning rate of 1. We prove that Expected Sarsa converges under the same conditions as Sarsa and formulate specific hypotheses about when Expected Sarsa will outperform Sarsa and Q-learning. Experiments in multiple domains confirm these hypotheses and demonstrate that Expected Sarsa has significant advantages over these more commonly used methods.},
    author = {Harm van Seijen and Hado van Hasselt and Shimon Whiteson and Marco Wiering},
@@ -174,12 +158,6 @@
    title = {Reinforcement Learning: An Introduction},
    url = {http://incompleteideas.net/book/the-book-2nd.html},
    year = {2018}
-}
-@misc{Huh2024,
-   author = {Dom Huh and Prasant Mohapatra},
-   title = {Multi-agent Reinforcement Learning: A Comprehensive Survey},
-   url = {https://arxiv.org/abs/2312.10256},
-   year = {2024}
 }
 @article{Schulman2017,
    author = {John Schulman and Filip Wolski and Prafulla Dhariwal and Alec Radford and Oleg Klimov},
@@ -400,98 +378,6 @@ CARLA, illustrating the platform's utility for autonomous driving research.},
    title = {2009 IEEE Symposium on Adaptive Dynamic Programming and Reinforcement Learning},
    year = {2009}
 }
-@article{Mnih2013,
-   abstract = {We present the first deep learning model to successfully learn control policies directly from high-dimensional sensory input using reinforcement learning. The model is a convolutional neural network, trained with a variant of Q-learning, whose input is raw pixels and whose output is a value function estimating future rewards. We apply our method to seven Atari 2600 games from the Arcade Learning Environment, with no adjustment of the architecture or learning algorithm. We find that it outperforms all previous approaches on six of the games and surpasses a human expert on three of them.},
-   author = {Volodymyr Mnih and Koray Kavukcuoglu and David Silver and Alex Graves and Ioannis Antonoglou and Daan Wierstra and Martin Riedmiller},
-   month = {12},
-   title = {Playing Atari with Deep Reinforcement Learning},
-   url = {http://arxiv.org/abs/1312.5602},
-   year = {2013}
-}
-@article{Zhu2020,
-   abstract = {Reinforcement learning is a learning paradigm for solving sequential decision-making problems. Recent years have witnessed remarkable progress in reinforcement learning upon the fast development of deep neural networks. Along with the promising prospects of reinforcement learning in numerous domains such as robotics and game-playing, transfer learning has arisen to tackle various challenges faced by reinforcement learning, by transferring knowledge from external expertise to facilitate the efficiency and effectiveness of the learning process. In this survey, we systematically investigate the recent progress of transfer learning approaches in the context of deep reinforcement learning. Specifically, we provide a framework for categorizing the state-of-the-art transfer learning approaches, under which we analyze their goals, methodologies, compatible reinforcement learning backbones, and practical applications. We also draw connections between transfer learning and other relevant topics from the reinforcement learning perspective and explore their potential challenges that await future research progress.},
-   author = {Zhuangdi Zhu and Kaixiang Lin and Anil K. Jain and Jiayu Zhou},
-   month = {9},
-   title = {Transfer Learning in Deep Reinforcement Learning: A Survey},
-   url = {http://arxiv.org/abs/2009.07888},
-   year = {2020}
-}
-@misc{Pan2010,
-   abstract = {A major assumption in many machine learning and data mining algorithms is that the training and future data must be in the same feature space and have the same distribution. However, in many real-world applications, this assumption may not hold. For example, we sometimes have a classification task in one domain of interest, but we only have sufficient training data in another domain of interest, where the latter data may be in a different feature space or follow a different data distribution. In such cases, knowledge transfer, if done successfully, would greatly improve the performance of learning by avoiding much expensive data-labeling efforts. In recent years, transfer learning has emerged as a new learning framework to address this problem. This survey focuses on categorizing and reviewing the current progress on transfer learning for classification, regression, and clustering problems. In this survey, we discuss the relationship between transfer learning and other related machine learning techniques such as domain adaptation, multitask learning and sample selection bias, as well as covariate shift. We also explore some potential future issues in transfer learning research. © 2006 IEEE.},
-   author = {Sinno Jialin Pan and Qiang Yang},
-   doi = {10.1109/TKDE.2009.191},
-   issn = {10414347},
-   issue = {10},
-   journal = {IEEE Transactions on Knowledge and Data Engineering},
-   keywords = {Transfer learning,data mining.,machine learning,survey},
-   pages = {1345-1359},
-   title = {A survey on transfer learning},
-   volume = {22},
-   year = {2010}
-}
-@article{Weiss2016,
-   abstract = {Machine learning and data mining techniques have been used in numerous real-world applications. An assumption of traditional machine learning methodologies is the training data and testing data are taken from the same domain, such that the input feature space and data distribution characteristics are the same. However, in some real-world machine learning scenarios, this assumption does not hold. There are cases where training data is expensive or difficult to collect. Therefore, there is a need to create high-performance learners trained with more easily obtained data from different domains. This methodology is referred to as transfer learning. This survey paper formally defines transfer learning, presents information on current solutions, and reviews applications applied to transfer learning. Lastly, there is information listed on software downloads for various transfer learning solutions and a discussion of possible future research work. The transfer learning solutions surveyed are independent of data size and can be applied to big data environments.},
-   author = {Karl Weiss and Taghi M. Khoshgoftaar and Ding Ding Wang},
-   doi = {10.1186/s40537-016-0043-6},
-   issn = {21961115},
-   issue = {1},
-   journal = {Journal of Big Data},
-   keywords = {Data mining,Domain adaptation,Machine learning,Survey,Transfer learning},
-   month = {12},
-   publisher = {SpringerOpen},
-   title = {A survey of transfer learning},
-   volume = {3},
-   year = {2016}
-}
-@techReport{Williams1992,
-   abstract = {This article presents a general class of associative reinforcement learning algorithms for connectionist networks containing stochastic units. These algorithms, called REINFORCE algorithms, are shown to make weight adjustments in a direction that lies along the gradient of expected reinforcement in both immediate-reinforcement tasks and certain limited forms of delayed-reinforcement tasks, and they do this without explicitly computing gradient estimates or even storing information from which such estimates could be computed. Specific examples of such algorithms are presented, some of which bear a close relationship to certain existing algorithms while others are novel but potentially interesting in their own right. Also given are results that show how such algorithms can be naturally integrated with backpropagation. We close with a brief discussion of a number of additional issues surrounding the use of such algorithms, including what is known about their limiting behaviors as well as further considerations that might be used to help develop similar but potentially more powerful reinforcement learning algorithms.},
-   author = {Ronald J Williams},
-   keywords = {Reinforcement learning,connectionist networks,gradient descent,mathematical analysis},
-   pages = {229-256},
-   title = {Simple Statistical Gradient-Following Algorithms for Connectionist Reinforcement Learning},
-   volume = {8},
-   year = {1992}
-}
-@article{Schulman2015,
-   abstract = {We describe an iterative procedure for optimizing policies, with guaranteed monotonic improvement. By making several approximations to the theoretically-justified procedure, we develop a practical algorithm, called Trust Region Policy Optimization (TRPO). This algorithm is similar to natural policy gradient methods and is effective for optimizing large nonlinear policies such as neural networks. Our experiments demonstrate its robust performance on a wide variety of tasks: learning simulated robotic swimming, hopping, and walking gaits; and playing Atari games using images of the screen as input. Despite its approximations that deviate from the theory, TRPO tends to give monotonic improvement, with little tuning of hyperparameters.},
-   author = {John Schulman and Sergey Levine and Philipp Moritz and Michael I. Jordan and Pieter Abbeel},
-   month = {2},
-   title = {Trust Region Policy Optimization},
-   url = {http://arxiv.org/abs/1502.05477},
-   year = {2015}
-}
-@article{Zhuang2019,
-   abstract = {Transfer learning aims at improving the performance of target learners on target domains by transferring the knowledge contained in different but related source domains. In this way, the dependence on a large number of target domain data can be reduced for constructing target learners. Due to the wide application prospects, transfer learning has become a popular and promising area in machine learning. Although there are already some valuable and impressive surveys on transfer learning, these surveys introduce approaches in a relatively isolated way and lack the recent advances in transfer learning. Due to the rapid expansion of the transfer learning area, it is both necessary and challenging to comprehensively review the relevant studies. This survey attempts to connect and systematize the existing transfer learning researches, as well as to summarize and interpret the mechanisms and the strategies of transfer learning in a comprehensive way, which may help readers have a better understanding of the current research status and ideas. Unlike previous surveys, this survey paper reviews more than forty representative transfer learning approaches, especially homogeneous transfer learning approaches, from the perspectives of data and model. The applications of transfer learning are also briefly introduced. In order to show the performance of different transfer learning models, over twenty representative transfer learning models are used for experiments. The models are performed on three different datasets, i.e., Amazon Reviews, Reuters-21578, and Office-31. And the experimental results demonstrate the importance of selecting appropriate transfer learning models for different applications in practice.},
-   author = {Fuzhen Zhuang and Zhiyuan Qi and Keyu Duan and Dongbo Xi and Yongchun Zhu and Hengshu Zhu and Hui Xiong and Qing He},
-   month = {11},
-   title = {A Comprehensive Survey on Transfer Learning},
-   url = {http://arxiv.org/abs/1911.02685},
-   year = {2019}
-}
-@article{Huh2023,
-   abstract = {Multi-agent systems (MAS) are widely prevalent and crucially important in numerous real-world applications, where multiple agents must make decisions to achieve their objectives in a shared environment. Despite their ubiquity, the development of intelligent decision-making agents in MAS poses several open challenges to their effective implementation. This survey examines these challenges, placing an emphasis on studying seminal concepts from game theory (GT) and machine learning (ML) and connecting them to recent advancements in multi-agent reinforcement learning (MARL), i.e. the research of data-driven decision-making within MAS. Therefore, the objective of this survey is to provide a comprehensive perspective along the various dimensions of MARL, shedding light on the unique opportunities that are presented in MARL applications while highlighting the inherent challenges that accompany this potential. Therefore, we hope that our work will not only contribute to the field by analyzing the current landscape of MARL but also motivate future directions with insights for deeper integration of concepts from related domains of GT and ML. With this in mind, this work delves into a detailed exploration of recent and past efforts of MARL and its related fields and describes prior solutions that were proposed and their limitations, as well as their applications.},
-   author = {Dom Huh and Prasant Mohapatra},
-   month = {12},
-   title = {Multi-agent Reinforcement Learning: A Comprehensive Survey},
-   url = {http://arxiv.org/abs/2312.10256},
-   year = {2023}
-}
-@article{Foster2024,
-   abstract = {Imitation learning (IL) aims to mimic the behavior of an expert in a sequential decision making task by learning from demonstrations, and has been widely applied to robotics, autonomous driving, and autoregressive text generation. The simplest approach to IL, behavior cloning (BC), is thought to incur sample complexity with unfavorable quadratic dependence on the problem horizon, motivating a variety of different online algorithms that attain improved linear horizon dependence under stronger assumptions on the data and the learner's access to the expert. We revisit the apparent gap between offline and online IL from a learning-theoretic perspective, with a focus on the realizable/well-specified setting with general policy classes up to and including deep neural networks. Through a new analysis of behavior cloning with the logarithmic loss, we show that it is possible to achieve horizon-independent sample complexity in offline IL whenever (i) the range of the cumulative payoffs is controlled, and (ii) an appropriate notion of supervised learning complexity for the policy class is controlled. Specializing our results to deterministic, stationary policies, we show that the gap between offline and online IL is smaller than previously thought: (i) it is possible to achieve linear dependence on horizon in offline IL under dense rewards (matching what was previously only known to be achievable in online IL); and (ii) without further assumptions on the policy class, online IL cannot improve over offline IL with the logarithmic loss, even in benign MDPs. We complement our theoretical results with experiments on standard RL tasks and autoregressive language generation to validate the practical relevance of our findings.},
-   author = {Dylan J. Foster and Adam Block and Dipendra Misra},
-   month = {7},
-   title = {Is Behavior Cloning All You Need? Understanding Horizon in Imitation Learning},
-   url = {http://arxiv.org/abs/2407.15007},
-   year = {2024}
-}
-@article{Vezhnevets2017,
-   abstract = {We introduce FeUdal Networks (FuNs): a novel architecture for hierarchical reinforcement learning. Our approach is inspired by the feudal reinforcement learning proposal of Dayan and Hinton, and gains power and efficacy by decoupling end-to-end learning across multiple levels -- allowing it to utilise different resolutions of time. Our framework employs a Manager module and a Worker module. The Manager operates at a lower temporal resolution and sets abstract goals which are conveyed to and enacted by the Worker. The Worker generates primitive actions at every tick of the environment. The decoupled structure of FuN conveys several benefits -- in addition to facilitating very long timescale credit assignment it also encourages the emergence of sub-policies associated with different goals set by the Manager. These properties allow FuN to dramatically outperform a strong baseline agent on tasks that involve long-term credit assignment or memorisation. We demonstrate the performance of our proposed system on a range of tasks from the ATARI suite and also from a 3D DeepMind Lab environment.},
-   author = {Alexander Sasha Vezhnevets and Simon Osindero and Tom Schaul and Nicolas Heess and Max Jaderberg and David Silver and Koray Kavukcuoglu},
-   month = {3},
-   title = {FeUdal Networks for Hierarchical Reinforcement Learning},
-   url = {http://arxiv.org/abs/1703.01161},
-   year = {2017}
-}
 @article{Kostrikov2018,
    abstract = {We identify two issues with the family of algorithms based on the Adversarial Imitation Learning framework. The first problem is implicit bias present in the reward functions used in these algorithms. While these biases might work well for some environments, they can also lead to sub-optimal behavior in others. Secondly, even though these algorithms can learn from few expert demonstrations, they require a prohibitively large number of interactions with the environment in order to imitate the expert for many real-world applications. In order to address these issues, we propose a new algorithm called Discriminator-Actor-Critic that uses off-policy Reinforcement Learning to reduce policy-environment interaction sample complexity by an average factor of 10. Furthermore, since our reward function is designed to be unbiased, we can apply our algorithm to many problems without making any task-specific adjustments.},
    author = {Ilya Kostrikov and Kumar Krishna Agrawal and Debidatta Dwibedi and Sergey Levine and Jonathan Tompson},
@@ -538,23 +424,7 @@ CARLA, illustrating the platform's utility for autonomous driving research.},
    url = {http://arxiv.org/abs/2407.00033},
    year = {2024}
 }
-@article{Levine2015,
-   abstract = {Policy search methods can allow robots to learn control policies for a wide range of tasks, but practical applications of policy search often require hand-engineered components for perception, state estimation, and low-level control. In this paper, we aim to answer the following question: does training the perception and control systems jointly end-to-end provide better performance than training each component separately? To this end, we develop a method that can be used to learn policies that map raw image observations directly to torques at the robot's motors. The policies are represented by deep convolutional neural networks (CNNs) with 92,000 parameters, and are trained using a partially observed guided policy search method, which transforms policy search into supervised learning, with supervision provided by a simple trajectory-centric reinforcement learning method. We evaluate our method on a range of real-world manipulation tasks that require close coordination between vision and control, such as screwing a cap onto a bottle, and present simulated comparisons to a range of prior policy search methods.},
-   author = {Sergey Levine and Chelsea Finn and Trevor Darrell and Pieter Abbeel},
-   month = {4},
-   title = {End-to-End Training of Deep Visuomotor Policies},
-   url = {http://arxiv.org/abs/1504.00702},
-   year = {2015}
-}
-@article{Zhu2020,
-   abstract = {Reinforcement learning is a learning paradigm for solving sequential decision-making problems. Recent years have witnessed remarkable progress in reinforcement learning upon the fast development of deep neural networks. Along with the promising prospects of reinforcement learning in numerous domains such as robotics and game-playing, transfer learning has arisen to tackle various challenges faced by reinforcement learning, by transferring knowledge from external expertise to facilitate the efficiency and effectiveness of the learning process. In this survey, we systematically investigate the recent progress of transfer learning approaches in the context of deep reinforcement learning. Specifically, we provide a framework for categorizing the state-of-the-art transfer learning approaches, under which we analyze their goals, methodologies, compatible reinforcement learning backbones, and practical applications. We also draw connections between transfer learning and other relevant topics from the reinforcement learning perspective and explore their potential challenges that await future research progress.},
-   author = {Zhuangdi Zhu and Kaixiang Lin and Anil K. Jain and Jiayu Zhou},
-   month = {9},
-   title = {Transfer Learning in Deep Reinforcement Learning: A Survey},
-   url = {http://arxiv.org/abs/2009.07888},
-   year = {2020}
-}
-@techReport{DPG,
+@techReport{deterministic_policy_gradient,
    abstract = {In this paper we consider deterministic policy gradient algorithms for reinforcement learning with continuous actions. The deterministic policy gradient has a particularly appealing form: it is the expected gradient of the action-value function. This simple form means that the deter-ministic policy gradient can be estimated much more efficiently than the usual stochastic policy gradient. To ensure adequate exploration, we introduce an off-policy actor-critic algorithm that learns a deterministic target policy from an exploratory behaviour policy. We demonstrate that deterministic policy gradient algorithms can significantly outperform their stochastic counterparts in high-dimensional action spaces.},
    author = {David Silver and Nicolas Heess and Thomas Degris and Daan Wierstra and Martin Riedmiller},
    title = {Deterministic Policy Gradient Algorithms}
@@ -565,4 +435,41 @@ CARLA, illustrating the platform's utility for autonomous driving research.},
    title = {Turtlebot 3},
    url = {https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/#notices},
    year = {2025}
+}
+@article{Schulman2017,
+   abstract = {We propose a new family of policy gradient methods for reinforcement learning, which alternate between sampling data through interaction with the environment, and optimizing a "surrogate" objective function using stochastic gradient ascent. Whereas standard policy gradient methods perform one gradient update per data sample, we propose a novel objective function that enables multiple epochs of minibatch updates. The new methods, which we call proximal policy optimization (PPO), have some of the benefits of trust region policy optimization (TRPO), but they are much simpler to implement, more general, and have better sample complexity (empirically). Our experiments test PPO on a collection of benchmark tasks, including simulated robotic locomotion and Atari game playing, and we show that PPO outperforms other online policy gradient methods, and overall strikes a favorable balance between sample complexity, simplicity, and wall-time.},
+   author = {John Schulman and Filip Wolski and Prafulla Dhariwal and Alec Radford and Oleg Klimov},
+   month = {7},
+   title = {Proximal Policy Optimization Algorithms},
+   url = {http://arxiv.org/abs/1707.06347},
+   year = {2017}
+}
+@article{replay_buffers,
+   abstract = {Reinforcement Learning (RL) algorithms aim to learn an optimal policy by iteratively sampling actions to learn how to maximize the total expected return, $R(x)$. GFlowNets are a special class of algorithms designed to generate diverse candidates, $x$, from a discrete set, by learning a policy that approximates the proportional sampling of $R(x)$. GFlowNets exhibit improved mode discovery compared to conventional RL algorithms, which is very useful for applications such as drug discovery and combinatorial search. However, since GFlowNets are a relatively recent class of algorithms, many techniques which are useful in RL have not yet been associated with them. In this paper, we study the utilization of a replay buffer for GFlowNets. We explore empirically various replay buffer sampling techniques and assess the impact on the speed of mode discovery and the quality of the modes discovered. Our experimental results in the Hypergrid toy domain and a molecule synthesis environment demonstrate significant improvements in mode discovery when training with a replay buffer, compared to training only with trajectories generated on-policy.},
+   author = {Nikhil Vemgal and Elaine Lau and Doina Precup},
+   month = {7},
+   title = {An Empirical Study of the Effectiveness of Using a Replay Buffer on Mode Discovery in GFlowNets},
+   url = {http://arxiv.org/abs/2307.07674},
+   year = {2023}
+}
+@article{Vemgal2023,
+   abstract = {Reinforcement Learning (RL) algorithms aim to learn an optimal policy by iteratively sampling actions to learn how to maximize the total expected return, $R(x)$. GFlowNets are a special class of algorithms designed to generate diverse candidates, $x$, from a discrete set, by learning a policy that approximates the proportional sampling of $R(x)$. GFlowNets exhibit improved mode discovery compared to conventional RL algorithms, which is very useful for applications such as drug discovery and combinatorial search. However, since GFlowNets are a relatively recent class of algorithms, many techniques which are useful in RL have not yet been associated with them. In this paper, we study the utilization of a replay buffer for GFlowNets. We explore empirically various replay buffer sampling techniques and assess the impact on the speed of mode discovery and the quality of the modes discovered. Our experimental results in the Hypergrid toy domain and a molecule synthesis environment demonstrate significant improvements in mode discovery when training with a replay buffer, compared to training only with trajectories generated on-policy.},
+   author = {Nikhil Vemgal and Elaine Lau and Doina Precup},
+   month = {7},
+   title = {An Empirical Study of the Effectiveness of Using a Replay Buffer on Mode Discovery in GFlowNets},
+   url = {http://arxiv.org/abs/2307.07674},
+   year = {2023}
+}
+@techReport{actor_critic_algorithms,
+   abstract = {We propose and analyze a class of actor-critic algorithms for simulation-based optimization of a Markov decision process over a parameterized family of randomized stationary policies. These are two-timescale algorithms in which the critic uses TD learning with a linear approximation architecture and the actor is updated in an approximate gradient direction based on information provided by the critic. We show that the features for the critic should span a subspace prescribed by the choice of parameterization of the actor. We conclude by discussing convergence properties and some open problems.},
+   author = {Vijay R Konda and John N Tsitsiklis},
+   title = {Actor-Critic Algorithms}
+}
+@book{dynamic_programing,
+   author = {Richard Bellman},
+   city = {Santa Monica},
+   edition = {1},
+   month = {7},
+   title = {The theory of dynamic programming},
+   year = {1954}
 }

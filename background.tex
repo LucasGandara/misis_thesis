@@ -1,40 +1,30 @@
-% $Id:background.tex  $
+% $Id:background.tex$
 % !TEX root = main.tex
 
 \chapter{Background}
+\label{chap:background}
+To improve the adaptability of autonomous systems in lane-changing scenarios, this project explores the use of transfer learning, leveraging pre-trained models and expert demonstrations. Before diving into the theoretical foundations that support this approach, it is crucial to establish the broader context of reinforcement learning and knowledge generalization. Autonomous systems must not only learn efficiently but also adapt to dynamic environments where minor variations can lead to system failure. In this section, we explore the theoretical principles that govern reinforcement learning, transfer learning, and their role in improving autonomous decision-making.
+
 \section{Reinforcement Learning}
-Reinforcement learning problem can be considered as training an agent to interact with an environment governed by a Markov Decision Process (MDP). A MDP is a mathematical framework used to model decision-making in situations where outcomes are partly random and partly under the control of a decision-maker. The agent would start in an initial state, for each interaction with MDP, the agent can take an action guided by a policy which leads into a new state and assigning to the agent a reward for the step it just took and an observation of the new state it just got in. This agent then, accumulates time-discounted rewards along with its interactions with the MDP. A set of subsequent interactions is known as a transition or episode. The RL problem consist of maximizing the time-discounted rewards along time\cite{Sutton2018}.
+Reinforcement learning (RL) is a type of machine learning process that focuses on decision making by autonomous agents on a Markov decision process (MDP). An autonomous agent is any system that can make decisions and act in response to its environment independent of direct instruction by a human user. An MDP is a mathematical framework used to model decision-making in situations where outcomes are partly random and partly under the control of a decision-maker, the agent starts in an initial state and moves between states in the MDP through the execution of actions. For a particular state $s$, the agent may execution action $a$, leading to a new state $s'$. For each of such iterations the agent receives a reward $r$, associated to the execution of a leading from $s$ to $s'$. RL agent, accumulates time-discounted rewards along with its interactions with the MDP. A set of subsequent interactions is known as a transition or episode. The RL problem consist of maximizing the time-discounted \cite{Sutton2018}.
 
 \begin{itemize}
     \item $S$ is a finite set of states representing the possible configurations of the system.
     \item $A$ is a finite set of actions available to the decision-maker.
-    \item $P: S \times A \times S \rightarrow [0, 1]$ is the state transition probability function, where $P(s' | s, a)$ denotes the probability of transitioning from state $s$ to state $s'$ after taking action $a$.
-    \item $R: S \times A \rightarrow \mathbb{R}$ is the reward function, which provides the immediate reward received after transitioning from state $s$ to state $s'$ due to action $a$.
+    \item $T: S \times A \times S \rightarrow [0, 1]$ is the state transition probability function, where $T(s' | s, a)$ denotes the probability of transitioning from state $s$ to state $s'$ after taking action $a$.
+    \item $R: S \times A \rightarrow \mathbb{R}$ is the reward function, which provides the immediate reward received after transitioning from state $s$ to state $s'$ while executing   $a$.
     \item $\gamma \in [0, 1]$ is the discount factor, which determines the present value of future rewards.
 \end{itemize}
-
-The objective in an MDP is to find a policy $\pi: S \rightarrow A$ that maximizes the expected cumulative reward over time. This optimal policy guides the decision-maker's actions at each state to achieve the best possible outcome\cite{markovian_desicion_process_book}.
 
 A visual representation of an MDP is provided in Figure \ref{fig:MDP Diagram}, illustrating the interaction between states, actions, rewards, and transitions.
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=\linewidth]{./figures/Agent-Environment.png}
+    \includegraphics[width=0.65\linewidth]{./figures/Agent-Environment.png}
     \caption[MDP]{Markov decision process. Took from: \cite{Sutton2018}}
     \label{fig:MDP Diagram}
 \end{figure}
 
-\subsection*{Policy}
-A \emph{policy} is a mapping from a state to an action.
-
-\begin{equation*}
-    \pi_t(s|a)
-    \label{eq: policy}
-\end{equation*}
-
-That is the probability of select an action $A_t = a$ if $S_t = s$.
-
-\subsection*{Reward and Return}
 The reward function $R$ plays a crucial role in reinforcement learning, as it is determined by the current state of the environment, the action just taken, and the resulting next state.
 
 \begin{equation*}
@@ -43,76 +33,157 @@ The reward function $R$ plays a crucial role in reinforcement learning, as it is
 
 Is frequently simplified to to just a dependence on the current state $r_t=R(s_t)$ or state action pair $r_t=R(s_t, a_t)$.
 
-The agent's objective is to maximize a certain measure of cumulative reward over a trajectory, the return, but this can take several forms. The notation of these scenarios is $R(\tau)$, and it will either be clear from the context which specific case is being referred to, or it won't be significant, as the same equations will apply in all cases.
+\subsection{Policies}
+A policy $\pi$ is a mapping from states to actions, which can be deterministic or stochastic. A deterministic policy $\pi$ maps each state $s$ to a specific action $a$, while a stochastic policy $\pi$ assigns a probability distribution over actions given a state. The goal of reinforcement learning is to find an optimal policy that maximizes the expected cumulative reward over time.
 
-The total \emph{reward} is expressed as:
+\subsection{Rewards}
+The reward function  $R$ plays a crucial role in reinforcement learning. It is influenced by the present state of the environment, the action that has just been executed, and the resulting next state. The total \emph{reward} of an agent is expressed as:
 
 \begin{equation*}
     G_t = \sum_{k = 0}^H \gamma^kr_{t + k + 1}
     \label{eq: total_reward}
 \end{equation*}
 
-Where $\gamma$ is the \emph{discount factor} and $H$ is the \emph{horizon}, that can be infinite.
+Where $\gamma$ is the \emph{discount factor} and $H$ is the \emph{horizon}, which can be infinite. The inclusion of a discount factor in reinforcement learning serves both practical and theoretical purposes. While maximizing rewards is the ultimate objective, the discount factor introduces an essential balance. From an intuitive perspective, immediate rewards hold greater value than future ones. Mathematically, an infinite-horizon sum of rewards may fail to converge to a finite value, making it difficult to manipulate in equations. However, with a properly chosen discount factor and under reasonable conditions, the infinite sum becomes manageable and converges to a well-defined result.
 
-\subsection*{Value functions}
+\subsection{The RL problem}
+The objective of an MDP is to find a policy $\pi_t(s|a)$ that maximizes the expected cumulative reward on a trajectory $\tau$. This optimal policy guides the decision-maker's actions at each state to achieve the best possible outcome \cite{markovian_desicion_process_book} return. Consider a scenario in which both the environment transitions and the policy exhibit stochastic behavior. Under these conditions, the probability associated with a $T$-step trajectory is given by:
 
-In a MDP the value function quantifies the expected cumulative reward an agent can achieve from a given state (or state-action pair). It helps evaluate how good it is for the agent to be in a particular state, or to take a certain action from that state, with the goal of maximizing long-term rewards. There are two common types of value functions, The \emph{State Value function (V)} and the \emph{Action-Value function (Q)}.
-Tha \emph{State Value function} denoted as $V_(s)$ represents the expected cumulative reward when starting from state $s$ and following a given policy $\pi$ thereafter:
+\begin{equation*}
+    P(\tau) = P(s_0) \prod_{t=0}^{T-1} P(s_{t+1}|s_t, a_t) \pi(a_t|s_t)
+\end{equation*}
+
+The expected return of a trajectory $\tau$ is defined as the sum of the discounted rewards over time:
+
+\begin{equation*}
+    J(\pi) = \sum_{T} P(\tau|\pi)R(\tau) = \mathbb{E}\left[R(T)\right]
+\end{equation*}
+
+The goal of reinforcement learning is to find the optimal policy $\pi^*$ that maximizes the expected return $J(\pi)$ over all possible policies. This can be expressed as:
+
+\begin{equation*}
+    \pi^* = \arg\max_{\pi} J(\pi)
+\end{equation*}
+
+\subsection{Value functions}
+In a MDP the value function quantifies the expected cumulative reward an agent can achieve from a given state (or state-action pair). It helps evaluate how good it is for the agent to be in a particular state, or to take a certain action from that state, with the goal of maximizing long-term rewards. There are two common types of value functions, The \emph{Value function (V)} and the \emph{Action-Value function (Q)}.
+The \emph{Value function} for a particular state $V_(s)$ represents the expected cumulative reward when starting from state $s$ and following a given policy $\pi$ thereafter:
 
 \begin{equation}
     V^\pi(s) = \mathbb{E}_\pi \left[ \sum_{t=0}^{\infty} \gamma^t r_{t+1} \mid s_t = s \right]
     \label{eq: value_suboptimal}
 \end{equation}
 
-The \emph{Action-Value function} also known as the Q-function, denoted as $Q(s,a)$ represents the expected cumulative reward when starting from state $s$, taking an action $a$, and then following a given policy $\pi$:
+The \emph{Action-Value function} also known as the Q-value, denoted as $Q(s,a)$ represents the expected cumulative reward when starting from state $s$, taking an action $a$, and then following a given policy $\pi$:
 
 \begin{equation}
     Q^\pi(s, a) = \mathbb{E}_\pi \left[ \sum_{t=0}^{\infty} \gamma^t r_{t+1} \mid s_t = s, a_t = a \right]
     \label{eq: q_func_suboptimal}
 \end{equation}
 
-Clearly, using this new notation we can redefine $V^*$, equation \ref{eq: value_suboptimal}, using $q^*(s,a)$, equation \ref{eq: q_func_suboptimal}:
+Using Q-values it is possible to calculate the optimal State values (in \fref{eq: q_func_suboptimal}) as follows:
 
 \begin{equation}
-    V_*(s) = \max\limits_{a \in A(s)} q_{\pi*}(s,a)
+    \label{eq:v_func_optimal}
+    V_{\pi}^{*}(s) = \max\limits_{a \in A(s)} q_{\pi*}(s,a)
 \end{equation}
 
-Intuitively, the above equation express the fact that the value of a state under the optimal policy \textbf{must be equal} to the expected return from the best action from that state.
+Intuitively, \fref{eq:v_func_optimal} expresses the fact that the value of a state under the optimal policy \textbf{must be equal} to the expected return from the best action from that state.
 
 Value functions helps the agent to make decisions by estimating the long-term benefits of being in certain states or taking specific actions.
 
-\section{Bellman Equation}
-The fundamental idea of the Bellman equations is that the value of the starting state is the expected reward from being in that state, combined with the value of the next state you reach.The Bellman Equation simplifies a complex problem by breaking it into smaller, more manageable steps. It helps determine the optimal decision-making strategy when outcomes depend on a sequence of actions. Bellman equations are expressed as:
+\subsection{Bellman Equations}
+The fundamental idea of the Bellman equations is that the value of the starting state is the expected reward from being in that state, combined with the value of the next state you reach.The Bellman Equation simplifies a complex problem by breaking it into smaller, more manageable steps. It helps to determine the optimal decision-making strategy when outcomes depend on a sequence of actions. Bellman equations are expressed as:
 
 \begin{equation*}
     V^\pi(s) = \underset{a \thicksim \pi}{\mathbb{E}} \left[ r(s,a) + \gamma V^\pi (s^{\prime}) \right]
 \end{equation*}
 
 \begin{equation}
+    \label{eq:q-value-bellman-equation}
     Q^\pi(s,a) =\underset{s^{\prime}\thicksim P}{\mathbb{E}} \left[ r(s,a) + \gamma \underset{a^{\prime}\thicksim \pi}{\mathbb{E}}\left[Q^{\pi}(s^{\prime},a^{\prime})\right]\right]
-    \label{eq: q-value-bellman-equation}
 \end{equation}
 
-\section{Deep reinforcement learning algorithms}
-This document focuses on Deep reinforcement learning, which uses neural networks to model traditional reinforcement learning algorithms and focuses on \emph{Temporal-Difference Learning} or TD which is an alternative to methods. Temporal difference learning focuses to solve RL problem so that both value function and policy can get improved simultaneously\cite{Sutton2018}. Some examples of \emph{Temporal difference} algorithms are SARSA\cite{SARSA}. Actor Critic\cite{SAC}. Q-learning algorithms for discrete state-action spaces that use deep neural networks exists as well such as Deep Q-Learning\cite{deep_q_learning}.
+\subsection{Dynamic programming and Monte Carlo methods}
+Dynamic programming (DP) is a collection of algorithms designed to compute optimal policies within a MDP, assuming a perfect model of the environment. While classical DP methods are computationally expensive and less practical for reinforcement learning, they remain foundational for understanding modern approaches. Most reinforcement learning methods aim to achieve similar outcomes as DP but with reduced computational costs and without relying on perfect environmental models. In finite MDPs, DP is instrumental in calculating value functions, which help structure the search for optimal policies. For continuous state and action spaces, approximate solutions are obtained by discretizing the environment and applying finite-state DP techniques. This chapter highlights how DP contributes to reinforcement learning, setting the stage for more advanced methods that extend its principles \cite{dynamic_programing}.
 
-TD-learning methods, like Q-learning, focus on estimating state-action value functions. In contrast, Policy Gradient methods aim at directly optimizing a parameterized policy. Traditional policy gradient approaches include algorithms such as REINFORCE\cite{reinforce_algorithm}. In recent years, there has been a convergence of TD-learning and policy gradient methods, largely due to advancements in deep neural networks. Notable algorithms in this area include Trust Region Policy Optimization (TRPO)\cite{TRPO}, Proximal Policy Optimization (PPO)\cite{ppo}, Deep Deterministic Policy Gradient (DDPG)\cite{ddpg} and Twin Delayed DDPG\cite{TD3}.
+Monte Carlo methods are a class of algorithms that rely on repeated random sampling to obtain numerical results. They are particularly useful for solving problems that involve uncertainty or randomness, such as estimating the value of a function or simulating complex systems. Monte Carlo methods can be used in various fields, including finance, physics, and engineering. In the context of reinforcement learning, Monte Carlo methods are often used to estimate value functions and optimize policies based on sampled trajectories from the environment \cite{Sutton2018}.
+
+\section{Reinforcement Learning Algorithms}
+Reinforcement learning stands apart from other learning paradigms by relying on training information that assesses the actions taken rather than providing explicit instructions on the correct actions. This necessitates active exploration as the agent searches for effective strategies. Evaluative feedback informs an agent about the quality of its chosen actions but does not indicate whether they were optimal or suboptimal. In contrast, instructive feedback explicitly directs an agent toward the correct action, regardless of what it initially selected. This latter form of feedback is central to supervised learning, which underpins techniques such as pattern classification, artificial neural networks, and system identification. Fundamentally, evaluative feedback is dependent on the action taken, whereas instructive feedback operates independently of it.
+
+\subsection{Policy Gradient Methods}
+Policy gradient methods aim to directly optimize the policy by performing gradient ascent on the expected return. The policy gradient theorem provides the analytical expression for the gradient of the expected return with respect to the policy parameters. The policy gradient theorem states that the gradient of the expected return with respect to the policy parameters can be expressed as:
+
+\begin{equation*}
+    \nabla_\theta J(\theta) = \mathbb{E}_{\pi_\theta}\left[\nabla_\theta \log \pi_\theta(a|s) \cdot Q^{\pi_\theta}(s,a)\right]
+\end{equation*}
+
+\subsection{Temporal-Difference Learning}
+The one concept that stands out as both fundamental and innovative in reinforcement learning, it is temporal-difference (TD) learning. TD learning merges principles from both Monte Carlo methods and dynamic programming (DP). Similar to Monte Carlo approaches, TD methods learn directly from raw experience without requiring a model of the environment's dynamics. Like DP, they update estimates using previously learned values, incorporating bootstrapping to refine predictions before final outcomes are observed. The interplay between TD, DP, and Monte Carlo techniques is a recurring theme in reinforcement learning theory, and this chapter marks the beginning of a deeper exploration.
+
+TD and Monte Carlo methods both leverage experience to address the prediction problem. Given a sequence of interactions under a policy $\pi$, these approaches update the estimate $V$ of $v^\pi$ for non terminal states $S_t$ encountered during that experience. Generally, Monte Carlo methods defer updates until the complete return following a state visit is observed, then use this return as the target for $V(S_t)$.
+The simplest TD method makes the update:
+
+\begin{equation*}
+    V(S_t) \leftarrow V(S_t) + \alpha\left(R_{t+1} + \gamma V(s_{t+1}) - V(S_t)\right)
+\end{equation*}
+
+ the value of state $S_t$ is adjusted based on the observed reward $R_{t+1}$, the discounted estimate of the next state's value $\gamma V(S_{t+1})$, and the difference from the current estimate $V(S_t)$.
+
+\subsection{Actor-Critic Methods}
+Actor-Critic methods are a class of reinforcement learning algorithms that combine policy-based and value-based approaches. These methods aim to improve stability and efficiency by leveraging two distinct components
+
+\begin{itemize}
+    \item The Actor: Responsible for selecting actions based on a learned policy.
+    \item The Critic: Estimates the value function to guide policy updates.
+\end{itemize}
+
+Actor-critic methods represent a fundamental class of algorithms in RL that combine the advantages of both policy-based and value-based methods. The critic approximates either the state-value function $V^\pi(s)$ or the action-value function $Q^\pi(s,a)$ using a separate set of parameters $w$:
+
+\begin{equation*}
+    V_w(s) \approx V^{\pi_\theta}(s)
+\end{equation*}
+
+\begin{equation*}
+    Q_w(s,a) \approx Q^{\pi_\theta}(s,a)
+\end{equation*}
+
+The actor updates its policy parameters using the policy gradient, where the true value function is replaced by the critic's estimate:
+
+\begin{equation*}
+\nabla_\theta J(\theta) \approx \mathbb{E}{\pi\theta}\left[\nabla_\theta \log \pi_\theta(a|s) \cdot A_w(s,a)\right]
+\end{equation*}
+
+where $A_w(s,a)$ is the advantage function estimated by the critic, often computed as:
+
+\begin{equation*}
+A_w(s,a) = Q_w(s,a) - V_w(s)
+\end{equation*}
+
+Actor-critic methods offer several advantages such as a reduced variance compared to pure policy gradient methods, improved sample efficiency, and the ability to handle continuous action spaces. They are widely used in various reinforcement learning applications, including robotics, game playing, and control tasks.
+
+\section{Deep reinforcement learning algorithms}
+This document focuses on Deep reinforcement learning, which uses neural networks to model traditional reinforcement learning algorithms and focuses on \emph{Temporal-Difference Learning} (TD). TD learning focuses to solve RL problems so that both value function and policy are improved simultaneously \cite{Sutton2018}. Some examples of \emph{Temporal difference} algorithms are SARSA \cite{SARSA}, Actor Critic \cite{SAC}, or Deep Q-Learning \cite{deep_q_learning} (DQL), an extension from the tabular Q-learning algorithm.
+
+TD-learning methods, like Q-learning, focus on estimating state-action value functions. In contrast, Policy Gradient methods aim at directly optimizing a parameterized policy. Traditional policy gradient approaches include algorithms such as REINFORCE \cite{reinforce_algorithm}. In recent years, there has been a convergence of TD-learning and policy gradient methods, largely due to advancements in deep neural networks. Notable algorithms in this area include Trust Region Policy Optimization (TRPO) \cite{TRPO}, Proximal Policy Optimization (PPO) \cite{ppo}, Deep Deterministic Policy Gradient (DDPG) \cite{ddpg} and Twin Delayed DDPG \cite{TD3}.
 
 \section{Deep Q Learning and Deep Deterministic Policy Gradient}
-In practice, the basic approach of iterating over the Bellman equation of the Q-values\ref{eq: q-value-bellman-equation}, since the action-value function is estimated independently for each sequence, with no generalization. Created by $DeepMind$, Deep Q Learning (DQL)\cite{deep_q_learning}, substitutes the $Q$ function with a deep neural network called \emph{Q-network}. This \emph{Q-network} is going to be updated by minimizing a sequence of a loss function defined by:
+Q-learning algorithms iteratively apply the Bellman equation \fref{eq:q-value-bellman-equation} to update Q-values, refining their estimates until they converge to an optimal policy. However, traditional Q-learning estimates the action-value function independently for each sequence, limiting generalization. To address this, DeepMind \footnote{Google DeepMind url: \url{https://deepmind.google/discover/blog/deep-reinforcement-learning/}} introduced Deep Q Learning (DQL) \cite{deep_q_learning}, which replaces the discrete Q-table with a deep neural network called the \emph{Q-network}. This \emph{Q-network} learns representations across different states and actions, improving generalization. It is optimized by minimizing the  loss function from \fref{eq:dql_loss}
+
+DQL keeps track of observation in \emph{memory} in order to use them to train the network, this is used to avoid the time correlation and make the samples to be more independently and evenly distributed. The full algorithm for DQL can be found in Algorithm \ref{al:deep_q_learning}.
 
 \begin{equation}
+    \label{eq:dql_loss}
     L_i(\theta_i) = \mathbb{E}_{(s, a, r, s') \sim U(D)}\begin{bmatrix}
         ( \underbrace{r + \gamma \max\limits_a Q(s',a'; \theta_{i-1})}_\text{target} - \underbrace{Q(s,a;\theta_i)}_\text{prediction})^2
     \end{bmatrix}
 \end{equation}
-Where $\theta$ are the weights of the network and $U(D)$ is the experience replay history.
 
-DQL algorithm also keep track of some observation in a $memory$ in order to use them to train the network, this is used to avoid the time correlation and make the samples to be more independently and identically distributed. the full algorithm can be found in algorithm \ref{al: dqn}.
+Where $\theta$ are the weights of the network and $U(D)$ is the experience replay buffer \cite{replay_buffers}.
 
-\hfil\break
-\begin{algorithm}[H]
-    \caption{Deep Q Learning algorithm}
+\begin{algorithm}[h] 
+    \fontsize{8pt}{6pt}\selectfont
     Initialize replay memory $D$ with capacity $N$\\
     Initialize $Q(s,a)$ arbitrarily \\
     \ForEach{episode $\in$ episodes}{
@@ -130,45 +201,23 @@ DQL algorithm also keep track of some observation in a $memory$ in order to use 
             Perform gradient descent step on $(y_j - Q(s_j, a_j;\Theta))^2 $ \\
             $s \leftarrow s'$
         }
-    }
-    \label{al: dqn}
+    } 
+    \caption{Deep Q Learning algorithm}
+    \label{al:deep_q_learning}
 \end{algorithm}
 
-\hfil\break
-which mins that the  actor is updated by following the applying the chain rule to the expected return from the start distribution $J$ with respect to the actor parameters.
+which means that the  actor is updated by applying the chain rule to the expected return from the start distribution $J$ with respect to the actor parameters.
 
-Deep Q learning has a downside, it is not suitable for continuous action spaces. When the set of possible actions is finite and discrete, computing the maximum presents no difficulty. One can simply evaluate the Q-values for each action individually and determine the highest value. This also immediately identifies the action that maximizes the Q-value. However, when the action space is continuous, exhaustive evaluation becomes impractical, and solving the associated optimization problem is considerably complex. Employing a conventional optimization algorithm to compute $\max_a Q^*(s,a)$ would result in an extremely costly subroutine. Given that this computation would be required each time the agent selects an action within the environment, such an approach is infeasible. To address this limitation, Deep Deterministic Policy Gradient (DDPG) was introduced. DDPG is an off-policy algorithm that uses a deterministic policy and a Q-function to learn the optimal policy in continuous action spaces. It also employs a replay buffer to store experiences and uses a target network to stabilize learning.
+Deep Q learning has a downside, it is not suitable for continuous action spaces. When the set of possible actions is finite and discrete, computing the maximum presents no difficulty. One can simply evaluate the Q-values for each action individually and determine the highest value. This also immediately identifies the action that maximizes the Q-value. However, when the action space is continuous, exhaustive evaluation becomes impractical, and solving the associated optimization problem is considerably complex. Employing a conventional optimization algorithm to compute $\max_a Q^*(s,a)$ would result in an extremely costly subroutine. Given that this computation would be required each time the agent selects an action within the environment, such an approach is infeasible. To address this limitation, Deep Deterministic Policy Gradient (DDPG) is introduced. DDPG is an off-policy algorithm that uses a deterministic policy and a Q-function to learn the optimal policy in continuous action spaces. DDPG employs a replay buffer to store experiences and uses a target network to stabilize learning.
 
-The Deterministic Policy Gradient (DPG)\cite{DPG} algorithm employs a parameterized actor function $\mu(s | \theta_\mu)$ that defines the current policy by deterministically associating states with specific actions. The critic function $Q(s, a)$ is learned through the Bellman equation, similar to Q-learning. The actor's parameters are updated by applying the chain rule to the expected return $J$ from the initial state distribution, ensuring an optimized policy adjustment. 
+DDPG works as an actor critic algorithm, where the actor is responsible for selecting actions based on the current policy, and the critic evaluates the actions taken by the actor. The critic is trained to minimize the mean squared error between the predicted Q-values and the target Q-values, which are computed using the Bellman equation.
 
-Similar to Deep Q-Networks (DQN), a replay buffer is utilized to mitigate the challenge of avoiding the states to be time correlated. The replay buffer, denoted as $R$, is a finite-sized cache that stores transitions sampled from the environment following an exploration policy. Each transition, represented as the tuple $(s_t, a_t, r_t, s_{t+1})$, is added to the buffer. When the buffer reaches capacity, the oldest samples are removed to make space for new data. At every time step, the actor and critic are refined by uniformly sampling a mini batch from the buffer. Since Deep Deterministic Policy Gradient (DDPG) operates as an off-policy algorithm, the replay buffer can be substantially large, enabling the algorithm to leverage learning across a diverse set of uncorrelated transitions. DDPG works as an actor critic algorithm, where the actor is responsible for selecting actions based on the current policy, while the critic evaluates the actions taken by the actor. The critic is trained to minimize the mean squared error between the predicted Q-values and the target Q-values, which are computed using the Bellman equation.
+DDPG built on top of the Deterministic Policy Gradient \cite{deterministic_policy_gradient} (DPG) algorithm which uses a deterministic and parameterized policy function $\mu(s\vert\theta_\mu)$ which defines the current action by deterministically associating them with specific. The critic function $Q(s,a)$ is learned through the Bellman equation, similar to Q learning. The actor parameters are updated by applying the chain rule to the expected return $J$ from the initial state distribution, ensuring an optimized policy adjustment.
 
-Consider a neural network, $Q_{\phi}(s,a)$, as a policy approximator, where $\phi$ represents its parameters. Suppose we have gathered a dataset $\mathcal{D}$ comprising transitions $(s,a,r,s',d)$, with $d$ indicating whether the state $s'$ is terminal. One can define the mean squared Bellman error function, which provides an estimate of how well $Q_{\phi}$ adheres to the Bellman equation\ref{eq: q-value-bellman-equation}.
+Similar to Deep Q-Networks (DQN), a replay buffer is utilized to mitigate the challenge of avoiding the states to be time correlated. The replay buffer, denoted as $R$, is a finite-sized cache that stores transitions sampled from the environment following an exploration policy. Each transition, represented as the tuple $(s_t, a_t, r_t, s_{t+1})$, is added to the buffer. When the buffer reaches capacity, the oldest samples are removed to make space for new data. At every time step, the actor and critic are refined by uniformly sampling a mini batch from the buffer. Since Deep Deterministic Policy Gradient (DDPG) operates as an off-policy algorithm, the replay buffer can be substantially large, enabling the algorithm to leverage learning across a diverse set of uncorrelated transitions.
 
-\begin{equation*}
-    L(\phi, \mathcal{D}) = \mathbb{E}_{(s,a,r,s',d)\sim\mathcal{D}}\left[\left(Q_{\phi}(s,a) - y(r,s',d)\right)^2\right]
-\end{equation*}
-
-where $y(r,s',d)$ is the target value, defined as:
-\begin{equation*}
-    y(r,s',d) = r + \gamma(1-d)\max_{a'} Q_{\phi}(s',a')
-\end{equation*}
-
-DDPG algorithm also applies a target network to stabilize the learning process. The target networks are copies of the actor and critic networks, which are updated slowly to ensure stability during training. The target networks are updated using a soft update mechanism, where the target parameters are updated as follows:
-
-\begin{equation*}
-    \theta_{\text{targ}} \leftarrow \tau\theta_{\text{targ}} + (1-\tau)\theta
-\end{equation*}
-
-The actor or so called \emph{policy} is updated by following the applying the chain rule to the expected return from the start distribution $J$ with respect to the actor parameters. The objective is to learn a deterministic policy, $ \mu_{\theta}(s) $, that selects the action maximizing $ Q_{\phi}(s,a) $. Given that the action space is continuous and assuming that the Q-function is differentiable with respect to the action, we can apply gradient ascent—focusing solely on policy parameters—to find the optimal solution.
-
-\begin{equation*}
-    \max_{\theta} \mathbb{E}_{s\thicksim\mu_0}\left[Q_{\phi}(s,\mu_{\theta}(s))\right]
-\end{equation*}
-
-The DDPG algorithm is summarized in Algorithm \ref{al: ddpg}.
-
-\begin{algorithm}[!ht]
+\begin{algorithm}[h]
+    \fontsize{8pt}{6pt}\selectfont
     \caption{Deep Deterministic Policy Gradient Algorithm}
     \label{al: ddpg}
     Input: initial policy parameters $\theta$, Q-function parameters $\phi$, empty replay buffer $\mathcal{D}$\;
@@ -195,10 +244,35 @@ The DDPG algorithm is summarized in Algorithm \ref{al: ddpg}.
         } 
     }
 \end{algorithm}
-\clearpage
 
+Consider a neural network, $Q_{\phi}(s,a)$, as a policy approximator, where $\phi$ represents its parameters. Suppose we have gathered a dataset $\mathcal{D}$ comprising transitions $(s,a,r,s',d)$, with $d$ indicating whether the state $s'$ is terminal. One can define the mean squared Bellman error function, which provides an estimate of how well $Q_{\phi}$ adheres to the Bellman equation\ref{eq:q-value-bellman-equation}.
+
+\begin{equation*}
+    L(\phi, \mathcal{D}) = \mathbb{E}_{(s,a,r,s',d)\sim\mathcal{D}}\left[\left(Q_{\phi}(s,a) - y(r,s',d)\right)^2\right]
+\end{equation*}
+
+where $y(r,s',d)$ is the target value, defined as:
+\begin{equation*}
+    y(r,s',d) = r + \gamma(1-d)\max_{a'} Q_{\phi}(s',a')
+\end{equation*}
+
+DDPG algorithm also applies two target network to stabilize the learning process. The target networks are copies of the actor and critic networks, which are updated slowly to ensure stability during training. The target networks are updated using a soft update mechanism, where the target parameters are updated as follows:
+
+\begin{equation*}
+    \theta_{\text{targ}} \leftarrow \tau\theta_{\text{targ}} + (1-\tau)\theta
+\end{equation*}
+
+The actor or so called \emph{policy} is updated by applying the chain rule to the expected return from the start distribution $J$ with respect to the actor parameters. The objective is to learn a deterministic policy, $ \mu_{\theta}(s) $, that selects the action maximizing $ Q_{\phi}(s,a) $. Given that the action space is continuous and assuming that the Q-function is differentiable with respect to the action, we can apply gradient ascent—focusing solely on policy parameters—to find the optimal solution.
+
+\begin{equation*}
+    \max_{\theta} \mathbb{E}_{s\thicksim\mu_0}\left[Q_{\phi}(s,\mu_{\theta}(s))\right]
+\end{equation*}
+
+The DDPG algorithm is summarized in Algorithm \ref{al: ddpg}.
+
+\clearpage
 \section{Twin Delayed DDPG (TD3)}
-Deep Deterministic Policy Gradient (DDPG) can sometimes achieve strong performance; however, it tends to be sensitive to hyperparameter and other tuning aspects. A common failure mode arises when the learned Q-function significantly overestimates Q-values, causing the policy to exploit these inaccuracies, ultimately leading to instability. Twin Delayed Deep Deterministic Policy Gradient mitigates this issue through three fundamental techniques:
+Deep Deterministic Policy Gradient (DDPG) can sometimes achieve good performance; however, it tends to be sensitive to hyperparameter optimization and other tuning aspects. A common failure mode arises when the learned Q-function significantly overestimates Q-values, causing the policy to exploit these inaccuracies, ultimately leading to instability. Twin Delayed Deep Deterministic Policy Gradient mitigates this issue through three fundamental techniques:
 
 \textbf{Clipped Double-Q Learning:} TD3 employs two Q-functions instead of one and utilizes the lower Q-value for target calculation in the Bellman error loss functions, reducing overestimation.
 
@@ -206,39 +280,12 @@ Deep Deterministic Policy Gradient (DDPG) can sometimes achieve strong performan
 
 \textbf{Target Policy Smoothing:} Noise is introduced to the target action in TD3, ensuring smoother Q-value estimates and preventing the policy from exploiting discrepancies in the learned Q-function.
 
-Collectively, these modifications lead to significant improvements in stability and performance compared to baseline DDPG\cite{TD3}.
+Collectively, these modifications lead to significant improvements in stability and performance compared to baseline DDPG \cite{TD3}.
 
-TD3 optimizes two Q-functions, $Q_{\phi_1}$ and $Q_{\phi_2}$, by minimizing the mean squared Bellman error, following a process similar to the single Q-function learning in DDPG. To illustrate the mechanics of TD3 and its distinctions from standard DDPG, the explanation begins at the core of the loss function and expands outward.
-
-Actions are taken directly from the policy $\mu_\theta$ plus a clipped noise and this actions is then clipped to not exceed the action space limits. So the action are calculated as:
-
-\begin{equation*}
-    a'(s') = \text{clip} \left(\mu_{\text{targ}}(s') + \text{clip}(\epsilon, -c, c), a_{Low}, a_{High}\right), \quad \epsilon \sim \mathcal{N}(0, \sigma)
-\end{equation*}
-
-Both Q-functions use a single target, calculated using whichever of the two Q-functions gives a smaller target value.
-
-\begin{equation*}
-    L(\phi_1, \mathcal{D}) = \mathbb{E}_{(s,a,r,s',d)\sim\mathcal{D}}\left[\left(Q_{\phi_1}(s,a) - y(r,s',d)\right)^2\right],
-\end{equation*}
-
-\begin{equation*}
-    L(\phi_2, \mathcal{D}) = \mathbb{E}_{(s,a,r,s',d)\sim\mathcal{D}}\left[\left(Q_{\phi_2}(s,a) - y(r,s',d)\right)^2\right].
-\end{equation*}
-
-Selecting the lower Q-value as the target and adjusting predictions accordingly helps mitigate the risk of overestimation in the Q-function, the policy is then learned just by maximizing $Q_{\phi_1}$.
-
-\begin{equation*}
-    \max_{\theta} \mathbb{E}_{(s,a,r,s',d)\sim\mathcal{D}}\left[Q_{\phi_1}(s,\mu_\theta(s))\right]
-\end{equation*}
-
-TD3 is similar to DDPG, but it uses two Q-functions and a single target policy. The target policy is updated less frequently than the Q-functions, and noise is added to the target action to improve stability. The TD3 algorithm is summarized in Algorithm \ref{al: td3}.
-
-TD3 employs an off-policy approach to train a deterministic policy. Since deterministic policies limit exploratory behavior when following an on-policy strategy, the agent might initially fail to sample a sufficiently diverse set of actions, reducing its ability to learn effectively. To enhance exploration during training, noise is introduced into the actions, typically using uncorrelated mean-zero Gaussian noise. Adjusting the noise scale over time can help generate higher-quality training data, though in our implementation, the noise scale remains constant throughout the training process.
-
-\begin{algorithm}[ht]
+\begin{algorithm}[h]
+\fontsize{8pt}{6pt}\selectfont
 \caption{Twin Delayed DDPG}
-    \label{al: td3}
+    \label{al:td3}
     Input: initial policy parameters $\theta$, Q-function parameters $\phi_1$, $\phi_2$, empty replay buffer $\mathcal{D}$\;
     Set target parameters equal to main parameters $\theta_{\text{targ}} \leftarrow \theta$, $\phi_{\text{targ},1} \leftarrow \phi_1$, $\phi_{\text{targ},2} \leftarrow \phi_2$\;
     \Repeat{convergence}{
@@ -266,7 +313,30 @@ TD3 employs an off-policy approach to train a deterministic policy. Since determ
         }
     }
 \end{algorithm}
-\clearpage
+
+TD3 optimizes two Q-functions, $Q_{\phi_1}$ and $Q_{\phi_2}$, by minimizing the mean squared Bellman error, following a process similar to the single Q-function learning in DDPG. To illustrate the mechanics of TD3 and its distinctions from standard DDPG, the explanation begins at the core of the loss function and expands outward. The target networks are now updated less frequently than the Q-functions as seen in Algorithm \ref{al:td3} every $t$ episodes. 
+
+TD3 employs an off-policy approach to train a deterministic policy. Since deterministic policies limit exploratory behavior when following an on-policy strategy, the agent might initially fail to sample a sufficiently diverse set of actions, reducing its ability to learn effectively. To enhance exploration during training, noise is introduced into the actions, typically using uncorrelated mean-zero Gaussian noise. Adjusting the noise scale over time can help generate higher-quality training data, though in our implementation, the noise scale remains constant throughout the training process. Actions are taken directly from the policy $\mu_\theta$ plus a clipped noise. These actions are then clipped so that the action space limits are not exceeded. So the action are calculated as:
+
+\begin{equation*}
+    a'(s') = \text{clip} \left(\mu_{\text{targ}}(s') + \text{clip}(\epsilon, -c, c), a_{Low}, a_{High}\right), \quad \epsilon \sim \mathcal{N}(0, \sigma)
+\end{equation*}
+
+Both Q-functions use a single target, calculated using whichever of the two Q-functions gives a smaller target value.
+
+\begin{equation*}
+    L(\phi_1, \mathcal{D}) = \mathbb{E}_{(s,a,r,s',d)\sim\mathcal{D}}\left[\left(Q_{\phi_1}(s,a) - y(r,s',d)\right)^2\right],
+\end{equation*}
+
+\begin{equation*}
+    L(\phi_2, \mathcal{D}) = \mathbb{E}_{(s,a,r,s',d)\sim\mathcal{D}}\left[\left(Q_{\phi_2}(s,a) - y(r,s',d)\right)^2\right].
+\end{equation*}
+
+Selecting the lower Q-value as the target and adjusting predictions accordingly helps mitigate the risk of overestimation in the Q-function, the policy is then learned just by maximizing $Q_{\phi_1}$.
+
+\begin{equation*}
+    \max_{\theta} \mathbb{E}_{(s,a,r,s',d)\sim\mathcal{D}}\left[Q_{\phi_1}(s,\mu_\theta(s))\right]
+\end{equation*}
 
 \section{CARLA: An Open-Source Urban Driving \\simulator}
 
@@ -285,28 +355,28 @@ The simulator supports a wide range of sensors, including cameras, LiDAR, RADAR,
 
 Pedestrians move through the town using a navigation map specific to each area, which assigns a cost to different locations. This cost system encourages pedestrians to follow sidewalks and designated crosswalks but does not restrict them from crossing streets elsewhere. As they roam the town, pedestrians interact with one another, attempting to avoid collisions and steering clear of vehicles. If a pedestrian is hit by a vehicle, they are removed from the simulation, and a new pedestrian is generated at a different location after a short delay.
 
-One of CARLA's significant contributions is its extensive benchmark suite, which enables standardized evaluation of autonomous driving algorithms. This includes tasks such as perception, planning, and control. Moreover, CARLA facilitates the collection of large-scale, diverse datasets, which are essential for training machine learning models in autonomous driving. As shown in Figure \ref{fig:CARLA Simulaor} is represented the same town but with different weather conditions to simulate a dynamic environment.
+One of CARLA's significant contributions is its extensive benchmark suite, which enables standardized evaluation of autonomous driving algorithms. This includes tasks such as perception, planning, and control. Moreover, CARLA facilitates the collection of large-scale, diverse datasets, which are essential for training machine learning models in autonomous driving. As shown in \fref{fig:CARLA Simulaor} is represented the same town but with different weather conditions to simulate a dynamic environment.
 
 \section{Robot Operating system}
-ROS (Robot Operating System) is an open source framework for developing specialized robotics software. It consists of a series of libraries, conventions and tools to create a robust specialized work environment. It has a variety of features, the name operating system (OS) is due to the fact that it has functionalities such as hardware abstraction, message passing between processes, among others, similar to that of an OS as shown in figure \ref{fig: ros as a framework}. However, a more appropriate name would be meta operating system since ROS operates on an operating system such as Linux \cite{ros_web} One of its most important parts is the communication infrastructure. It offers an interface for transferring information in the form of messages; usually this communication between components is one of the first needs when creating any robot.
+The ROS (Robot Operating System) is an open source framework for developing specialized robotics software. It consists of a series of libraries, conventions and tools to create a robust specialized work environment. It has a variety of features, the name operating system (OS) is due to the fact that it has functionalities such as hardware abstraction and message passing between processes, among others, similar to the functionalities of an OS, as shown in \fref{fig:ros_as_a_framework}. ROS operates on top of an operating system such as Linux \cite{ros_web}. One of its most important features is the communication infrastructure, it offers an interface for transferring information in the form of messages; usually this communication between components is one of the first needs when creating any robot.
 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.6\textwidth]{./figures/ROS_FRAMEWORK.png}
     \caption{Diagram of ROS as a meta operating system.}
-    \label{fig: ros as a framework}
+    \label{fig:ros_as_a_framework}
 \end{figure}
 
-Its basic operation is best explained as a graph architecture. In a simplified way, ROS allows you to create communication nodes, which are executable files with ROS commands inside a ROS package. These nodes communicate through topics. In turn, a topic can \emph{publish} messages for another topic to \emph{subscribe} to and vice versa. The ROS Master node will start with the first initialized node and will be in charge of managing the other nodes as shown in figure \ref{fig: ros nodes graph}.
+ROS basic operation is best explained as a graph architecture. In a simplified way, ROS allows you to create communication nodes, which are executable files with ROS commands inside a ROS package. These nodes communicate through topics. In turn, a topic can \emph{publish} messages for another topic to \emph{subscribe} to and vice versa. The ROS Master node will start with the first initialized node and will be in charge of managing the other nodes as shown in \fref{fig:ros nodes graph}.
 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.5\textwidth]{./figures/ros_nodes.png}
     \caption{Computational Graph of a ROS node.}
-    \label{fig: ros nodes graph}
+    \label{fig:ros nodes graph}
 \end{figure}
 
-Likewise, ROS has a package called \emph{gazebo\_ros} that allows its integration with Gazebo\cite{gazebo_url}, a simulator (shown in figure \ref{fig: gazebo showcase}) that is largely faithful to reality since it include in its software physics engines such as ODE\footnote{ODE physics simulator: \url{https://www.ode.org/}},Bullet\footnote{Bullet physics engine: \url{https://pybullet.org/wordpress}}, Simbody\footnote{Multibody physics API: \url{https://objectivesimtk.org/projects/simbody}} and DART\footnote{Dynamic Animation and Robotics Toolkit: \url{https://dartsim.github.io/}}. Because of this, the state of the simulated environment is highly accurate and always available, the covariances of the measurements when simulating sensors are amplified and Gaussian noise is added to the observed data, thus creating realistic scenarios that allow simulations to be carried out and data to be taken similar to that which would be obtained in the real environment.
+Likewise, ROS has a package called \emph{gazebo\_ros} that allows its integration with Gazebo\cite{gazebo_url}, a simulator (shown in figure \ref{fig: gazebo showcase}) that is largely faithful to reality since it include in its software physics engines such as ODE\footnote{ODE physics simulator: \url{https://www.ode.org/}},Bullet\footnote{Bullet physics engine: \url{https://pybullet.org/wordpress}}, Simbody\footnote{Multibody physics API: \url{https://objectivesimtk.org/projects/simbody}} and DART\footnote{Dynamic Animation and Robotics Toolkit: \url{https://dartsim.github.io/}}. As a consequence this, the state of the simulated environment is highly accurate and always available, the covariances of the measurements when simulating sensors are amplified and Gaussian noise is added to the observed data, thus creating realistic scenarios that allow simulations to be carried out and data to be taken similar to that which would be obtained in the real environment.
 
 \begin{figure}[ht]
     \centering
@@ -316,18 +386,18 @@ Likewise, ROS has a package called \emph{gazebo\_ros} that allows its integratio
 \end{figure}
 
 \section{Transfer Learning}
-There are several ways of transfer learning, numerous approaches have been explored to enhance reinforcement learning (RL) by incorporating different forms of supervision, often within distinct problem contexts. There are other techniques related to TL, examining their differences and connections may help to better define the relationship between TL and these approaches. \emph{Discriminator Actor-critic}\cite{imitation_learning} is one of them, they aim to train a policy by demonstrating the target actor an expert policy with few samples. This imitation could be more aggressive where the target actor is trained in a supervised manner with an expert policy\cite{imitation_learning_supervised}. Other form of transfer learning is \emph{Hierarchical Reinforcement Learning} (HRL) that has been proposed to focus on tasks where the actions space can be broken down into more simple action spaces to form a higher level macro of actions. Some algorithms of this kind could be Feudal learning\cite{feudal_rd}.
+There are several ways to implement transfer learning, numerous approaches have been explored to enhance reinforcement learning (RL) by incorporating different forms of supervision, often within distinct problem contexts. There are other techniques related to TL, examining their differences and connections may help to better define the relationship between TL and these approaches. \emph{Discriminator Actor-critic} \cite{imitation_learning}, it aims to train a policy by demonstrating the target actor an expert policy with few samples. This imitation could be more aggressive where the target actor is trained in a supervised manner with an expert policy \cite{imitation_learning_supervised}. Other form of transfer learning is \emph{Hierarchical Reinforcement Learning} (HRL) that has been proposed to focus on tasks where the actions space can be broken down into more simple action spaces to form a higher level of macro actions. One example of HRL algorithm is Feudal learning\cite{feudal_rd}.
 
-\emph{Multi-Agent Reinforcement Learning} or MARL is also another group of transfer learning algorithms, in this kind of framework, the MDP is considered with multiple actors interacting with the environment simultaneously and is focused to solve tasks that are not feasible to be learned by a single agent\cite{multi_agent_rl}.
+\emph{Multi-Agent Reinforcement Learning} or MARL also explore transfer learning, in MARL, the MDP is considered with multiple actors interacting with the environment simultaneously and is focused to solve tasks that are not feasible to be learned by a single agent \cite{multi_agent_rl}.
 
-TL tries to answer some questions like how the knowledge is stored or transferred, Whether or not all RL algorithms are compatible with TL, the significant of the difference between the source and the target domains or what is the goal to transfer learning. During a learned task, lets say \emph{Humanoid Standup}\footnote{Farama Humanoid standup: \url{https://gymnasium.farama.org/environments/mujoco/humanoid_standup/}}, the source and target domains $D$s can have differences such as the the state space, where one of them can have constraints that the other one does not have. The action space can also be different by changing the range of available forces that can be applied to the actuators. The reward function could be changed by encourage the agent do slight different behavior, or some actions can led into more penalty cost. Some differences can even reside in the trajectories where the source or target domain may allow shorter or larger total steps within the environment \cite{TL_survey}.
+TL tries to answer questions like how knowledge is stored or transferred, Whether or not all RL algorithms are compatible with TL, the significance of the difference between the source and the target domains or what is the goal to transfer learning. During a learned task, lets say \emph{Humanoid Standup}\footnote{Farama Humanoid standup: \url{https://gymnasium.farama.org/environments/mujoco/humanoid_standup/}}, the source and target domains $D$s can have differences such as the the state space, where one of them can have constraints that the other one does not have. The action space can also be different by changing the range of available forces that can be applied to the actuators. The reward function could be changed by encourage the agent do slight different behavior, or some actions can led into more penalty cost. Some differences can even reside in the trajectories where the source or target domain may allow shorter or larger total steps within the environment \cite{TL_survey}.
 
 There are some other questions one can ask to try to find an answer to this question. How is the prior knowledge stored?. There's more than one answer to this question which some of them are going to be added in the following sections, but some of them one could think of in the context of reinforcement learning are to pass down the learned value function to the new task which is going to tell the agent which states and actions are good given a state, Or a learned policy which tells the agent which actions are potentially useful Or even a learned model such a physics of the environment or some learned rules by a prior agent that already learned the prior task \cite{TL_survey}. Lets first introduce formally TL in the context of reinforcement learning and then explore some of it's techniques.
 
 Beyond transfer learning, numerous approaches have been explored to enhance reinforcement learning (RL) by incorporating different forms of supervision, often within distinct problem contexts. There are other techniques related to TL, examining their differences and connections may help to better define the relationship between TL and these approaches. \emph{Discriminator Actor-critic}\cite{imitation_learning} is one of them, they aim to train a policy by demonstrating the target actor an expert policy with few samples. This imitation could be more aggressive where the target actor is trained in a supervised manner with an expert policy\cite{imitation_learning_supervised}. Other form of transfer learning is \emph{Hierarchical Reinforcement Learning} (HRL) that has been proposed to focus on tasks where the actions space can be broken down into more simple action spaces to form a higher level macro of actions. Some algorithms of this kind could be Feudal learning\cite{feudal_rd}.
 \emph{Multi-Agent Reinforcement Learning} or MARL is also another group of transfer learning algorithms, in this kind of framework, the MDP is considered with multiple actors interacting with the environment simultaneously and is focused to solve tasks that are not feasible to be learned by a single agent\cite{multi_agent_rl}.
 
-As mention at the beginning of the section, some questions like how the knowledge is stored or transferred, Whether or not all RL algorithms are compatible with TL, the significant of the difference between the source and the target domains or what is the goal to transfer learning. During a learned task, lets say \emph{Humanoid Standup}\footnote{Farama Humanoid standup: \url{https://gymnasium.farama.org/environments/mujoco/humanoid_standup/}}, the source and target domains $D$s can have differences such as the the state space, where one of them can have constraints that the other one does not have. The action space can also be different by changing the range of available forces that can be applied to the actuators. The reward function could be changed by encourage the agent do slight different behavior, or some actions can led into more penalty cost. Some differences can even reside in the trajectories where the source or target domain may allow shorter or larger total steps within the environment \cite{TL_survey}.
+As mention at the beginning of the section, some questions like how the knowledge is stored or transferred, Whether or not all RL algorithms are compatible with TL, the significant of the difference between the source and the target domains or what is the goal to transfer learning. During training on a task, \emph{Humanoid Standup}\footnote{Farama Humanoid standup: \url{https://gymnasium.farama.org/environments/mujoco/humanoid_standup/}} for instance, the source and target domains can have differences such as the the state space, where one of them can have constraints that the other one does not have. The action space can also be different by changing the range of available forces that can be applied to the actuators. The reward function could be changed to encourage the agent to have slight different behavior, or some actions can be associated with more penalty costs. Some differences can even reside in the trajectories where the source or target domains may allow shorter or larger total steps within the environment \cite{TL_survey}.
 
 The main challenge and question Transfer Learning tries to answer is wether a reinforcement learning algorithm could used prior knowledge from other tasks in the same way a humans do, i.e. Can an algorithm play better Montezuma's revenge\footnote{Montezuma's Revenge - Parker Brothers - Atari 2600 video game.} by letting it watch the movie. If prior tasks are solved, is it possible to acquire useful knowledge for solving new task?
 
@@ -371,7 +441,54 @@ Several strategies are employed to facilitate domain adaptation in RL:
 Domain adaptation is an essential component of this work, as the goal is to ensure that policies developed within the CARLA simulation can generalize effectively to real-world driving environments.
 
 \subsection*{Learning from demonstration}
-Learning from demonstration is a technique to assist reinforcement learning using demonstrations either from human agents, an expert policy or even a sub-optimal policy. In our case we are going to use the previously trained agent to add an extra gradient when updating our actor and critic models. The idea is not to replace one agent with another, it is to somehow have, as it says in \cite{pretraining_tl}, a master policy, understanding a teacher as something that teaches. And in this way "co-train" the agent with the expert policy by adding its gradient when calculating the value function which in this case is the Q function. The thesis then is that by applying this co-training technique it will be possible to evaluate through these metrics how effective or how good the agent's pedagogy was. Applying these algorithms and transferring them to real life in a real environment.
+Learning from demonstration is a technique to assist reinforcement learning using demonstrations either from human agents, an expert policy or even a sub-optimal policy. In our case we are going to use the previously trained agent to add an extra gradient when updating our actor and critic models. The idea is not to replace one agent with another, it is to somehow have, as it says in \cite{pretraining_tl}, a master policy, understanding a teacher as something that teaches. And in this way "pre-train" the agent with the expert policy by adding its gradient when calculating the value function which in this case is the Q function.
+
+Suppose there is an expert policy $\pi^*$ that is better than policy a $pi$, in this context, performance is measured by the ultimate reward $R$ achieved by a policy. This is:
+
+\begin{equation*}
+    \phi(\pi^*) \geq \phi(\pi)
+\end{equation*}
+
+In \cite{TD3} the authors show that for ths two policies $\phi(\pi)$ and $\phi(\pi^*)$ the following holds:
+
+\begin{equation*}
+   \phi(\pi^*) - \phi(\pi) = \mathbb{E}_{s_{0}^{*},a_{0}^{*}\thicksim\pi^*,...,}\left[\sum_{t=0}^{\infty}\gamma^t A^\pi \left( s_{t}^{*}, a_{t}^{*}\right)\right] 
+\end{equation*}
+
+Which implies that:
+
+\begin{equation}
+    \label{eq:proff_of_transferable_knowledge}
+    \mathbb{E}_{s_{0}^{*},a_{0}^{*}\thicksim\pi^*,...,}\left[\sum_{t=0}^{\infty}\gamma^t A^\pi \left( s_{t}^{*}, a_{t}^{*}\right)\right] \geq 0
+\end{equation}
+
+Since in actor-critic algorithms, two neural networks are used, one for the actor and one for the critic and the idea is to leverage the theorem from \fref{eq:proff_of_transferable_knowledge}, \cite{pretraining_tl} proposes two extra gradients $g^*_Q$, $g^*_\pi$ to the original gradient of the algorithm. For the critic, the gradient is defined as:
+
+\begin{equation*}
+    g_{Q}^{*} = \nabla_{Q} \left[
+         \mathbb{E}_{s_{0}^{*},a_{0}^{*},...\thicksim\pi^*,}\left[\sum_{t=0}^{\infty} \gamma^t A^{w,\theta} \left( s_{t}^{*}, a_{t}^{*}\right)\right]
+    \right]_{+}
+\end{equation*}
+
+And for the actor, the gradient is defined as:
+
+\begin{equation*}
+    g_{\pi}^{*} = -\nabla_{\pi} \mathbb{E}_{s_{0}^{*},a_{0}^{*},...\thicksim\pi^*,}\left[\sum_{t=0}^{\infty} \gamma^t A^{w,\theta} \left( s_{t}^{*}, a_{t}^{*}\right)\right]
+\end{equation*}
+
+Where $A^{w,\theta}$ is the advantage function, which is defined as:
+
+\begin{equation*}
+    A^{w,\theta} \left( s_{t}^{*}, a_{t}^{*}\right) = Q^{w,\theta} \left( s_{t}^{*}, a_{t}^{*}\right) - V^{w,\theta} \left( s_{t}^{*}\right)
+\end{equation*}
+
+Where:
+
+\begin{equation*}
+    V^{w, \theta} \left( s_{t}^{*}\right) = \mathbb{E}_{a_{t}^{*}\thicksim\pi^*}\left[Q^{w,\theta} \left( s_{t}^{*}, a_{t}\right)\right]
+\end{equation*}
+
+The thesis then is that by applying this co-training technique it will be possible to evaluate through these metrics how effective or how good the agent's pedagogy was. Applying these algorithms and transferring them to real life in a real environment.
 
 To pre train actor-critic RL algorithms like DDPG, is possible to add extra gradients to both actor and the critic networks $g^*_Q$, $g^*_\pi$ to the original gradient of the algorithm such that:
 
