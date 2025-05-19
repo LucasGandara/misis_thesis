@@ -631,14 +631,14 @@ INPUT ./figures/gazebo_show.png
 INPUT c:/texlive/2025/texmf-dist/fonts/tfm/public/lm/rm-lmbx10.tfm
 INPUT c:/texlive/2025/texmf-dist/fonts/tfm/public/lm/rm-lmbx7.tfm
 INPUT c:/texlive/2025/texmf-dist/fonts/tfm/public/lm/rm-lmbx5.tfm
+INPUT c:/texlive/2025/texmf-dist/fonts/tfm/public/lm/rm-lmbx8.tfm
+INPUT c:/texlive/2025/texmf-dist/fonts/tfm/public/lm/rm-lmbx6.tfm
 INPUT ./evaluation.tex
 INPUT ./evaluation.tex
 OUTPUT evaluation.aux
 INPUT ./evaluation.tex
 INPUT ./evaluation.tex
 INPUT evaluation.tex
-INPUT c:/texlive/2025/texmf-dist/fonts/tfm/public/lm/rm-lmbx8.tfm
-INPUT c:/texlive/2025/texmf-dist/fonts/tfm/public/lm/rm-lmbx6.tfm
 INPUT ./figures/town5_carla_view1.png
 INPUT ./figures/town5_carla_view1.png
 INPUT ./figures/town5_carla_view1.png
@@ -663,6 +663,7 @@ INPUT ./figures/critic_1_model.png
 INPUT ./figures/critic_1_model.png
 INPUT ./figures/critic_1_model.png
 INPUT ./figures/critic_1_model.png
+INPUT c:/texlive/2025/texmf-dist/fonts/tfm/public/lm/ec-lmtt10.tfm
 INPUT ./figures/actor_model.png
 INPUT ./figures/actor_model.png
 INPUT ./figures/actor_model.png
@@ -735,7 +736,6 @@ INPUT appendix-a.tex
 INPUT ./main.bbl
 INPUT ./main.bbl
 INPUT main.bbl
-INPUT c:/texlive/2025/texmf-dist/fonts/tfm/public/lm/ec-lmtt10.tfm
 INPUT ./main.ind
 INPUT ./main.ind
 INPUT main.ind

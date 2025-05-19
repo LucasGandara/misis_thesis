@@ -4,13 +4,13 @@
 \chapter{Evaluation}
 \label{cha:experiments}
 
-In this chapter we turn our attention to the evaluation of the proposed transfer learning approach to develop agents with the capability to have general knowledge. We first describe the experimental setup, including the environments used for training and testing the agents (\fref{sec:setup}). Then, we present the results of the experiments, including the performance of the agents in both environments and the effectiveness of transfer learning in improving their performance. Finally, we discuss the implications of these results and their significance for future research in this area.
+In this chapter we turn our attention to the evaluation of the proposed transfer learning approach to develop agents with the capability to have general knowledge. We first describe the experimental setup, including the environments used for training and testing the agents (\fref{sec:setup}). Then, in the following chapters we present the results of the experiments, including the performance of the agents in both environments and the effectiveness of transfer learning in improving their performance. Finally, we discuss the implications of these results and their significance for future research in this area.
 
 
 \section{Experimental Setup}
 \label{sec:setup}
 
-The experiments were run using the Gazebo ros simulator and Carla simulator on a computer with the following specifications:
+The experiments are run using the Gazebo ROS simulator and Carla simulator on a computer with the following specifications:
 \begin{itemize}
     \item CPU: AMD Ryzen 9 8945HS 
     \item RAM: 16GB
@@ -24,10 +24,9 @@ As a machine learning framework, we used Tensorflow 2.18.\footnote{Tensorflow: \
 
 \subsection{Carla}
 \label{sec:carla}
+The first environment chosen was CARLA \cite{CARLA}, which provides a realistic and dynamic context for autonomous driving research. A reward signal was chosen to incentivize the agent to maintain a target speed of 50 km/h, the allowed road speed. The simulation environment for this study is the CARLA urban driving simulator.
 
-Many options were taken in count while selecting environment to apply the transfer learning technique. The first one was CARLA \cite{CARLA}, which provides a realistic and dynamic context for autonomous driving research. In the frame of the MDP a reward signal was chosen to incentivize the agent to maintain a target speed of 50 km/h. The simulation environment for this study is the CARLA urban driving simulator.
-
-Given that this thesis is employing a Twin Delayed Deep Deterministic Policy Gradient for decision-making, the action space has three continuous signals that can be powered: steering the vehicle, Throttle the vehicle, or break, CARLA simulator provides a way to manually shift gears and press the hand break, however in this experiment the car is only going to be able to move forward and the the gear shifting is going to be automatic. The vehicle is going to have one sensor only which is going to be an rgb frontal camera attached to the roof of the vehicle which is going to produce images of 3 rgb channels of 480 x 640 pixels. The reward function is designed to encourage the agent to reach and sustain the desired speed of $50km/h$ while navigating through the environment. This approach ensures that the agent learns to balance the need for speed with the challenges of urban driving, such as handling turns and avoiding obstacles. To achieve this, the agent receives a penalty of $-1$ for every step taken that is not above the $50km/h$, and gets a penalty of $-200$ for a collision and a negative reward of $-15$ every time it changes lane in a forbidden area.
+Given that this thesis is employing a Twin Delayed Deep Deterministic Policy Gradient for decision-making, the action space has three continuous signals: steering the vehicle, Throttle the vehicle, or break, The CARLA simulator provides a way to manually shift gears and use the hand break, however in this experiment the car is only going to be able to move forward and the the gear shifting is going to be automatic. The vehicle has one sensor, an rgb frontal camera attached to the roof of the vehicle which produce images of 3 rgb channels of 480 x 640 pixels. The reward function is designed to encourage the agent to reach and sustain the desired speed of $50km/h$ while navigating through the environment. This approach ensures that the agent learns to balance the need for speed with the challenges of urban driving, such as handling turns and avoiding obstacles. To achieve this, the agent receives a penalty of $-1$ for every step taken that is at $50km/h$, the agent gets a penalty of $-200$ for a collision and a negative reward of $-15$ every time it changes lanes in a forbidden area.
 
 \begin{figure}[ht]
     \centering
@@ -48,11 +47,11 @@ Given that this thesis is employing a Twin Delayed Deep Deterministic Policy Gra
     \label{fig:town5carla}
 \end{figure}
 
-\cite[Xception]{XCeption} is a 71 layer deep convolutional neural network which has over 23 millions trainable parameters. It was utilized to act as a policy function of the DDPG algorithm, for the critic network, a 4 layered of convolutional model followed by 2 dense layers was used to predict the value function of the actor in the environment.
+We use Xception \cite{Xception}, a 71 layer deep convolutional neural network which has over 23 millions trainable parameters. It is used to act as a policy function of the TD3 algorithm, for the critic network. A 4 layered of convolutional model followed by 2 dense layers is used to predict the value function of the actor in the environment.
 
-The agent in the simulator was chosen to be a Cybertruck, model provided by the simulator as shown in \fref{fig:cybwertruck_carla}. CARLA provides in its catalogue a list of maps for use. For the experiment it was used the \fref{fig:town5carla} is an urban area nestled against conifer-covered hills, featuring a raised highway and expansive multilane roads with several major intersections.
+The agent in the simulator is a Cybertruck, model provided by the simulator as shown in \fref{fig:cybwertruck_carla}. CARLA provides in its catalogue a list of maps for use. For the experiment it was used the \fref{fig:town5carla} is an urban area nestled against conifer-covered hills, featuring a raised highway and expansive multilane roads with several major intersections.
 
-\begin{figure}[h!]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.8\textwidth]{./figures/tesla_cybertruck_carla.png}
     \caption{Cybertruck model in Carla environment in Town 5.}
@@ -60,38 +59,40 @@ The agent in the simulator was chosen to be a Cybertruck, model provided by the 
 \end{figure}
 
 \subsection{Gazebo ROS}
-The next environment was developed in Gazebo simulator and the Turtlebot3 mobile base shown in figure \ref{fig: tb3 model burger}, a differential mobile base with a Lidar\footnote{Laser Distance Sensor: https://emanual.robotis.com/docs/en/platform/turtlebot3/appendix\_lds\_01/} to sense the environment on a range of 24 degrees around the mobile base. The Turtlebot3 is a versatile and widely used platform in robotics research and education, making it suitable for various applications, including autonomous navigation and mapping.\footnote{Turtlebot3: \url{https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/}}
+Gazebo simulator with the Turtlebot3\footnote{Turtlebot3: \url{https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/}} mobile base shown in \fref{fig: tb3 model burger}.
 
-As mentioned in algorithm \ref{al: td3}, two architecture of neural networks has to be constructed, one to perform as a critic and the other one as an actor/policy.
-
-\begin{figure}[ht]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.2\textwidth]{./figures/turtlebor3_burger.png}
     \caption{Turtlebot3 model Burger.}
     \label{fig: tb3 model burger}
 \end{figure}
 
-The neural network begins with two input layers composed of 28 and 1 units, serving as the entry point where the initial data is fed into the model, one for the state and one for the action. Each input layer are followed by a set of layers to process the inputs, for the states, two dense layers\footnote{A dense layer is a simple Layer of neurons in which each neuron receives input from all the neurons of the previous layer: \url{https://keras.io/api/layers/core\_layers/dense}.} of 28 and 16 units are used, for the actor only one layer of 32 units are used. Next, the inputs pass through a dense layer named "concatenate" to become the output as 1 and then through a "dense\_1," which contains 256 units. This layer extracts useful features from the input data. Following this, another dense layer, "dense\_2," also consists of 256 units, further refining and processing the extracted features. After these dense layers, the data moves to the final output layer, named "output," which contains a single unit. This unit is responsible for generating the final output of the network. Additionally, a multiply layer, called "multiply," also has 1 unit, which helps scale the output appropriately. This structured sequence ensures that the network efficiently processes and transforms the input into a meaningful output.
+The Turtlebot3 has a Lidar\footnote{Laser Distance Sensor: https://emanual.robotis.com/docs/en/platform/turtlebot3/appendix\_lds\_01/} to sense the environment on a range of 360 degrees around the robot, for the experiments, we reduced the range down to 24 samples. The lidar vector is combined with extra information about the environment that is going to be explained later in this section.
 
-\begin{figure}[ht]
+As mentioned in Algorithm \ref{al:td3}, two architectures of neural networks are used, one for the critic and one for the actor/policy.
+
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.6\textwidth]{./figures/critic_1_model.png}
     \caption{Critic network architecture.}
-    \label{fig: critic network}
+    \label{fig:critic_network}
 \end{figure}
 
-The neural network that performs as actor/policy can be see in \ref{fig: actor network} and starts with an input layer, which consists of the state information. This layer is followed by a dense layer with 256 units, which processes the input data. The next layer, named "dense\_2," also contains 256 units and further refines the information. After these layers, the data moves to the output layer, called "output," which has a single unit. This unit generates the final output of the network, representing the action to be taken based on the input state. Additionally, there is a multiply layer named "multiply," which also has 1 unit. This layer helps scale the output appropriately.
+Tha Critic network architecture is shown in \fref{fig:critic_network}, it begins with two input layers, \texttt{"state\_input"} for the batch of states and \texttt{"action\_input"} for the batch of actions, these inputs are followed by a a set of dense\footnote{A dense layer is a simple Layer of neurons in which each neuron receives input from all the neurons of the previous layer: \url{https://keras.io/api/layers/core\_layers/dense}.} layer to abstract their approximation and evaluate them separate. The state input is followed by \texttt{"state\_out"}, a dense layer of 16 units followed by a dense layer of 32 unit called \texttt{"state\_value"}. The \texttt{"action\_input"} is followed by a a dense layer \texttt{"action\_value"}, a dense layer of 32 units. Right after evaluating the state and action inputs, the two branches are concatenated into a single layer called \texttt{"concatenate"}, which combines the information from both inputs. This concatenated output is then processed by a dense layer with 64 units, followed by another dense layer with 32 units. Finally, the output layer, named \texttt{"dense"}, produces the final output of the network, \texttt{"critic\_value"}, which represents the Q-value for the given state-action pair.
+
+The actor/policy network architecture can be seen in \ref{fig:actor_network} and starts with an input layer, which consists of the state information. This layer is followed by a dense layer with 256 units, which processes the input data. The next layer, named \texttt{"dense\_2"} also contains 256 units and further refines the information. After these layers, the data moves to the output layer, called "output," which has a single unit. This unit generates the final output of the network, representing the action to be taken based on the input state. Additionally, there is a multiply layer named "multiply," which also has 1 unit. This layer helps scale the output appropriately.
 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.4\textwidth]{./figures/actor_model.png}
     \caption{Actor network architecture.}
-    \label{fig: actor network} 
+    \label{fig:actor_network} 
 \end{figure}
 
-The input state of the network is the measurement received from the Lidar sensor which consist of 24 measurement of detected distances in angles around the mobile base plus the $x$ and $y$ distance of the goal from the mobile base.
+The input state of the network is the measurement received from the Lidar sensor which consist of 24 measurement of detected distances in angles around the mobile base plus the $x$ and $y$ distance of the goal from the mobile base plus the heading angle $\theta$ of the robot with respect to the goal.
 
-The reward functions was designed to encourage the mobile base to get from its start point to the goal point in the less episodes possible and discouraging crash against any obstacle and keeping only on one side of the road. A crash of any kind is catastrophic for the episode. This function calculates a reward value that assists in guiding robot navigation by evaluating three primary factors: angular velocity, heading, and distance to the goal. The reward is designed to encourage efficient movement by balancing these elements.
+The reward functions was designed to encourage the mobile base to get from its start point to the goal point in the least amount of episodes possible, discouraging crashes against obstacles and keeping only on one side of the road. A crash of any kind is catastrophic for the episode. This function calculates a reward value that assists in guiding robot navigation by evaluating three primary factors: angular velocity, heading, and distance to the goal. The reward is designed to encourage efficient movement by balancing these elements.
 
 The function takes several inputs:
 \begin{itemize}
@@ -101,19 +102,18 @@ The function takes several inputs:
     \item \textbf{Weight parameters}: Allow fine-tuning of the influence of angular velocity, heading, and distance improvement in the reward calculation.
 \end{itemize}
 
-By integrating these factors with adjustable weight parameters, the function produces a single reward value. This reward helps the robot make better navigation decisions by encouraging smooth directional adjustments, goal-focused movement, and minimizing unnecessary deviations.
+The integration of these factors with adjustable weight parameters, produces a single reward value. This reward helps the robot make better navigation decisions by encouraging smooth directional adjustments, goal-focused movement, and minimizing unnecessary deviations.
 
-To emulate the driving paradigm change, it was built an environment of a roundabout with line tracks emulated by walls as shown in figure \ref{fig: gazebo tb3 environment}. The blue layer represent what the robot "sees" through the Lidar scans. For each episode the robot is going to start from one side of the environment and should learn to go to the other side of the environment following only one track of the road, then, another agent is going to be trained with a brand new actor and critic models to follow the other track of the road so at the end there are two agents, one that knows how to traverse the environment following the right side and the other ones knows the other paradigm.
+To visualize and enact the driving paradigm change, we use an environment of a roundabout with line tracks emulated by walls as shown in \fref{fig:gazebo_tb3_environment}. The blue layer represent what the robot "sees" through the Lidar scans. For each episode the robot is going to start from one end of the environment and should learn to go to the other end of the environment following only one side of the road. Another agent is trained with brand new actor and critic models to follow the other side of the road so at the end there are two agents, one that effective drives following the right side and the other agent that drives following the left side lane.
 
-\begin{figure}[ht]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.7\textwidth]{./figures/experiment_environment_gazebo.png}
-    \caption{Turtlebot 3 in Gazebo simulator with roundabout environment.}
-    \label{fig: gazebo tb3 environment}
+    \caption{Turtlebot 3 in Gazebo simulator with roundabout environment. THe blue layer represents the Lidar scan of the environment, notice how the Lidar sensor has a limited distance range.}
+    \label{fig:gazebo_tb3_environment}
 \end{figure}
 
-\hfil\break
-Once the two agents are trained, The expert agents have to transfer the knowledge  to the new agents via transfer learning using equations \ref{eq: pre train gradient pi} and \ref{eq: pre train gradient Q} and measuring the transferred knowledge by 3 metrics given by the following equations:
+Once the two agents are trained, The expert agents have to transfer the knowledge  to the new agents via transfer learning using equations \ref{eq: pre train gradient pi} and \ref{eq: pre train gradient Q} and measuring the transferred knowledge by 3 metrics given by Equation \ref{eq:tl_metrics}.
 
 \begin{equation}
     \centering
@@ -122,6 +122,7 @@ Once the two agents are trained, The expert agents have to transfer the knowledg
         Mastery               & = \text{Ultimate performance of the agent.}                                          \\
         Pedagogy              & = \text{How many less episodes the TL took.}
     \end{split}
+    \label{eq:tl_metrics}
 \end{equation}
 
-Where the $\text{Ultimate performance}$ means the return of the episode or the discounted cumulative reward achieved by the agent at the end of the episode. On each experiment, there are some metrics that are going to be saved to measure the performance of the agent such as the average reward per episode, the maximum reward achieved for episode, the time taken to complete the stage without crashing and the loss values accumulated by the networks during the training. The average reward is calculated by taking the mean of the rewards obtained in the last 50 episodes, while the maximum reward is determined by identifying the highest reward achieved in any episode. The time taken to complete the stage is measured in seconds, and the loss values are recorded for both the actor and critic networks during training.
+Where $\text{Ultimate performance}$ refers to the return of the episode or the discounted cumulative reward achieved by the agent at the end of the episode. On each experiment, there are some metrics that are going to be saved to measure the performance of the agent such as the average reward per episode, the maximum reward achieved per episode, the time taken to complete the simulation without crashing, and the loss values accumulated by the networks during the training. The average reward is calculated by taking the mean of the rewards obtained in the last 50 episodes, while the maximum reward is determined by identifying the highest reward achieved in any episode. The time taken to complete the stage is measured in seconds, and the loss values are recorded for both the actor and critic networks during training.
