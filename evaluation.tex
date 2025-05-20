@@ -104,7 +104,7 @@ The function takes several inputs:
 
 The integration of these factors with adjustable weight parameters, produces a single reward value. This reward helps the robot make better navigation decisions by encouraging smooth directional adjustments, goal-focused movement, and minimizing unnecessary deviations.
 
-To visualize and enact the driving paradigm change, we use an environment of a roundabout with line tracks emulated by walls as shown in \fref{fig:gazebo_tb3_environment}. The blue layer represent what the robot "sees" through the Lidar scans. For each episode the robot is going to start from one end of the environment and should learn to go to the other end of the environment following only one side of the road. Another agent is trained with brand new actor and critic models to follow the other side of the road so at the end there are two agents, one that effective drives following the right side and the other agent that drives following the left side lane.
+To visualize and enact the driving paradigm change, we use an environment of a roundabout with line tracks emulated by walls as shown in \fref{fig:gazebo_tb3_environment}. The blue layer represent what the robot "sees" through the Lidar scans.
 
 \begin{figure}[h]
     \centering
@@ -113,7 +113,10 @@ To visualize and enact the driving paradigm change, we use an environment of a r
     \label{fig:gazebo_tb3_environment}
 \end{figure}
 
-Once the two agents are trained, The expert agents have to transfer the knowledge  to the new agents via transfer learning using equations \ref{eq: pre train gradient pi} and \ref{eq: pre train gradient Q} and measuring the transferred knowledge by 3 metrics given by Equation \ref{eq:tl_metrics}.
+\section{Experiment Design and metrics to measure}
+The experimental setup consists of multiple training phases. First, we trained two independent expert agents: one that learns to navigate exclusively on the right side of the road and another that learns to navigate exclusively on the left side. These experts start from one end of the environment and learn to reach the other end while maintaining their respective lane positions. After establishing these baseline experts, we conducted three additional training experiments: the first one, training a new agent to drive on the left side using the right-side expert as a knowledge base. The second, training a new agent to drive on the right side using the left-side expert as a knowledge base, and a final expert based training, a comprehensive agent that learns to navigate both sides of the road simultaneously. Each of these three agents was initialized with brand new actor and critic models. This progressive approach allows us to evaluate the effectiveness of transfer learning between different driving behaviors in the autonomous navigation context.
+
+After establishing the expert agents, we conducted one final experiment focusing specifically on transfer learning. In this experiment, we trained a new agent to drive on the left side of the road by leveraging knowledge from the previously trained left-side expert. Unlike the independent training approach, this agent employed transfer learning techniques using the policy gradient transfer defined in Equation \ref{eq: pre train gradient pi} and the Q-function gradient transfer defined in Equation \ref{eq: pre train gradient Q}. To quantitatively evaluate the effectiveness of this knowledge transfer, we measured performance using three metrics as defined in Equation \ref{eq:tl_metrics}. This experiment allowed us to assess whether transfer learning could accelerate the acquisition of driving skills compared to training from scratch.
 
 \begin{equation}
     \centering

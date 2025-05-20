@@ -2,8 +2,8 @@
 % !TEX root = main.tex
 
 \chapter{Results}
-\subsection{Carla}
-On CARLA experiment it was possible to train up to 32.000 iterations which took around 32 hours of training, however, due to technical difficulties related with the hardware, and the model being computationally expensive, it was not possible to train any further, the simulator requires 6Gb of video memory out of the 8 that comes with the Nvidia 4060 ti, which only leaves 2Gb of memory to train. Even though as shown in figure the reward seems to go up, the variance through episodes is too high and the agent doesn't take any action that from a human perspective is ideal. From this point, it was decided to not move forward this simulator.
+\section{Carla}
+From the CARLA experiment we trained up to 32.000 iterations which took around 32 hours of training, however, due to technical difficulties related with the hardware, and the model being computationally expensive, it was not possible to train any further, the simulator requires 6Gb of video memory out of the 8 that comes with the Nvidia 4060 ti, which only leaves 2Gb of memory to train. Even though as shown in figure the reward seems to go up, the variance through episodes is too high and the agent does not take any action that from a human perspective is ideal. From this point, it was decided to not move forward this simulator.
 
 \begin{figure}[h]
     \centering
@@ -11,28 +11,33 @@ On CARLA experiment it was possible to train up to 32.000 iterations which took 
     \caption{CARLA TD3 Cybertruck train log, 14000 iterations.}
 \end{figure}
 
-\subsection{Gazebo ROS}
-All agents were trained until they reach the final goal 10 times in a row without crashing. The right experiment took around 6 hours to train, maximum the average reward was 3150 as shown in \fref{fig:gazebo_right_avg}.
+\section{Gazebo ROS}
+All agents are trained until they reach the final goal 10 times in a row without crashing.
+
+\subsection{Single responsibility agents}
+The agent expert to drive on the right-side lane took 149 steps to achieve the goal and took 5.82 hours to train with a final average reward of 2621 as shown in \fref{fig:gazebo_right_avg}.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.65\textwidth]{./figures/rigth_no_tl_avg_reward_past_50_episodes.png}
-    \caption{Gazebo ROS right agent train log, Reward gained per episode.} 
+    \caption{Gazebo ROS right agent train log, average reward gained per episode.} 
     \label{fig:gazebo_right_avg} 
 \end{figure}
 
-The left experiment took around 8 hours to train, the maximum average reward was 3108 as shown in \fref{fig:gazebo_left_avg}. Even though this experiments took less steps to train, the time it took was longer, this is because the environment ends a step only when there is a crash, so it's episodes could be longer than the right agent.
+Training the agent to drive on the lef took 3.461 hours to train with a final average reward of 2155 as shown in \fref{fig:gazebo_left_avg}. In this experiment the agent takes took less steps to train and less time to train.
 
-\begin{figure}[h]
+\begin{figure}[!htb]
     \centering
     \includegraphics[width=0.65\textwidth]{./figures/left_no_tl_avg_reward_past_50_episodes.png}
-    \caption{Gazebo ROS left agent train log, Reward gained per episode.} 
+    \caption{Gazebo ROS left agent train log, average reward gained per episode.} 
     \label{fig:gazebo_left_avg}
 \end{figure}
 
-We can see in \fref{fig:gazebo_right_avg} and \fref{fig:gazebo_left_avg} a tendency of the reward to go down on the first episodes before it starts to go up, this is a common behavior in  TD3\cite{TD3} and DDPG\cite{ddpg} algorithms.
+Figures \ref{fig:gazebo_right_avg} and \ref{fig:gazebo_left_avg} show similar trend for the behavior of the reward to go down on the first episodes before it starts to go up, this is a common behavior in  TD3 \cite{TD3} and DDPG \cite{ddpg} algorithms.
+\FloatBarrier
 
-Once we have the expert agents trained, we are going to use the right expert agent to keep training in the other paradigm without expert demonstration learning to have a baseline to compare the results. The agent took around 8 hours to train from the base expert and the maximum reward it achieved was 3150 and the full training can be seen in \fref{fig:gazebo_right_left_avg}.
+\subsection{Training agents from previous trained agents}
+The left agent that started from right agent as baseline took 103 steps and 3.59 hours to train from the base expert and the maximum reward it achieved was 3150 and the full training can be seen in \fref{fig:gazebo_right_left_avg}.
 
 \begin{figure}[h]
     \centering
@@ -41,23 +46,34 @@ Once we have the expert agents trained, we are going to use the right expert age
     \label{fig:gazebo_right_left_avg}
 \end{figure}
 
-In \fref{fig:gazebo_right_left_avg} we can see the transition between the expert agent and its continuation to the other side, We can see here that it took less steps than training the agent from 0. Notice how the reward goes down again at the beginning of both training, once again, this is a characteristic of the TD3 algorithm.
+\fref{fig:gazebo_right_left_avg} shows the transition between the expert agent and its continuation to drive on the other side of the road, We can see that retraining the agent to now drive on both sides, takes less steps than training the agent to drive on the left from scratch. Notice how the reward goes down again at the beginning of both training. Following the characteristic of the TD3 algorithm.
 
-The next agent was trained from the expert right agent on the left environment, this time using \fref{eq: pre train gradient pi} and \fref{eq: pre train gradient Q} as part of the training process, this agent took around 1.6 hours to train and the maximum reward it achieved was 3150, the full training can be seen in \fref{fig:gazebo_right_left_transfer}.
+The following agent was trained from scratch and starting in the right environment, however, every random number of episodes, the environment was change paradigms, this agent took 3.413 hours, and the maximum reward it achieved was 2311, the full training graph can be seen in \fref{fig:gazebo_random}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.65\textwidth]{./figures/random_both.png}    
+    \caption{Gazebo ROS random agent train log. Average reward gained per episode.}
+    \label{fig:gazebo_random}
+\end{figure}
+
+The agent was able to learn both paradigms, However, it took more time than the agents that only had to learn one paradigm, this is because the agent was trained from scratch and it had to learn both paradigms at the same time, which made it harder for the agent to learn.
+
+The next agent was trained from the expert right agent on the left environment, this time using \fref{eq: pre train gradient pi} and \fref{eq: pre train gradient Q} as part of the training process, this agent took 1.929 hours to train and the maximum reward it achieved was 2788, the full training can be seen in \fref{fig:gazebo_right_left_transfer}.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.65\textwidth]{./figures/tl_right_expert_left_environment.png}
-    \caption{Gazebo ROS transfer learning agent train log.} 
+    \caption{Gazebo ROS transfer learning agent train log, average reward gained per episode.} 
     \label{fig:gazebo_right_left_transfer}
 \end{figure}
 
-We can put these 3 results together, the right left agent, the left right agent that learned from the right expert agent and the left agent that learned with transfer learning .
+We can put the last 4 results together, the right agent, the left agent that learned from the right expert agent with no transfer learning, the agent that learned both paradigms at the same time and the left agent that learned with transfer learning .
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.68\textwidth]{figures/comparison_1.png}
-    \caption{Gazebo ROS comparison of the 3 agents.} 
+    \caption{Gazebo ROS comparison of the 4 agents.} 
     \label{fig:gazebo_transfer_learning_comparison}
 \end{figure}
 
@@ -68,5 +84,49 @@ In terms of time there is also a clear difference as shown in , the agent that l
 \begin{figure}[h]
    \centering
    \includegraphics[width=0.6\textwidth]{figures/time_comparison_1.png}
-   \caption{Gazebo ROS comparison of the 3 agents in terms of time.} 
+   \caption{Gazebo ROS comparison of the 4 agents in terms of time.} 
 \end{figure}
+
+\subsection{Transfer learning metrics}
+We can replace the results from the experiments in Equations \ref{eq:tl_metrics} for each of the agents, for the right agent we have:
+
+\begin{equation}
+   \centering
+    \begin{split}
+        \text{Transfer ratio} & = \frac{2621}{2788} = 0.9401 \\
+        Mastery               & = 2788                                         \\
+        Pedagogy              & = 149 - 70 = 79\\
+    \end{split}
+\end{equation}
+
+For the left agent that learned from the right agent with no transfer learning we have:
+
+\begin{equation}
+   \centering
+    \begin{split}
+        \text{Transfer ratio} & = \frac{2621}{3150} = 0.8320 \\
+        Mastery               & = 2788                                         \\
+        Pedagogy              & = 103 - 70 = 79\\
+    \end{split}
+\end{equation}
+
+For the agent that learned both paradigms at the same time we have:
+
+\begin{equation}
+   \centering
+    \begin{split}
+        \text{Transfer ratio} & = \frac{2621}{2288} = 1.1455 \\
+        Mastery               & = 2788                                         \\
+        Pedagogy              & = 139 - 70 = 79\\
+    \end{split}
+\end{equation}
+
+\section{Threats to Validity}
+\label{sec:threats}
+In this section, we discuss the potential threats to the validity of our evaluation. While our experimental framework provides valuable insights into transfer learning for autonomous driving agents, it is important to acknowledge certain limitations that may affect the generalization and interpretation of our results. Experimental design choices, training procedures, and environmental constraints can all introduce potential biases or limitations. In this section, we discuss the primary threats to the validity of our evaluation and their potential impact on our findings.
+\begin{itemize}
+\item \textbf{Experiment Termination Criterion:} Our experiment termination criterion may impact result generalization. We stop an experiment when the agent successfully completes the driving course 10 consecutive times without crashes, regardless of its performance in terms of reward or efficiency metrics. This approach prioritizes safety over optimization, which may result in agents that achieve basic competence but not optimal performance.
+\item \textbf{Continuous Expert Demonstrations:} We continuously provide expert demonstrations throughout the training process rather than gradually reducing them. This persistent guidance may create a dependency where agents struggle to outperform the experts they are being trained with, potentially limiting their ability to discover novel or more efficient driving strategies.
+
+\item \textbf{Environmental maximum reward:} The maximum reward in the environment is achievable by an expert driver, and this reward is not that far from non optimal policies, this means that the agent can learn to drive in a way that is not optimal but still achieve a high reward, this is a common problem in reinforcement learning and it is known as the reward hacking problem \cite{reward_hacking}. For the Transfer ratio metric this could be a limitation.
+\end{itemize}
