@@ -1,35 +1,3 @@
 % $Id:furute-work.tex  $
 % !TEX root = main.tex
-
-\chapter{Limitations and future work}
-Despite these promising results, several limitations were identified that warrant further investigation. As discussed in Section \ref{sec:threats}, our experimental design contained some inherent limitations:
-
-\begin{itemize}
-    \item \textbf{Experiment termination criterion:} By stopping experiments when agents successfully completed 10 consecutive runs without crashes, we prioritized safety over optimization. While this ensured reliable performance, it may have resulted in agents achieving basic competence rather than optimal performance. Future work should explore more sophisticated termination criteria that balance safety with performance optimization.
-
-    \item \textbf{Continuous expert demonstrations:} The persistent guidance from expert demonstrations throughout training may have created a dependency that limited agents' ability to discover novel or more efficient driving strategies. Future studies should implement a scheduled reduction in expert demonstrations to promote greater agent independence.
-    
-    \item \textbf{Environmental reward structure:} As noted in our threats to validity, the relatively small gap between optimal and suboptimal policy rewards (reward hacking problem) may have affected our transfer ratio metric. This highlights the need for more discriminative reward structures in future experiments.
-    
-    \item \textbf{Simulation complexity:} Our initial attempts with CARLA revealed the challenges of working with highly complex simulation environments. While Gazebo ROS provided a controlled environment suitable for our study, the simplified nature of this environment may limit the generalization of our findings to real-world driving scenarios.
-    
-\end{itemize}
-
-Based on our findings, future research directions should include:
-
-\begin{itemize}
-    \item \textbf{Leave learning agent the expert demonstrations:} Future experiments should keep the training of the agents but not the expert demonstrations, this way we can see how the agent performance can grow more than the expert agent and how the agent can learn to drive better than the expert agent. This will also help to see if the agent can learn to drive in a more efficient way than the expert agent.
-
-    \item \textbf{Use of more complex environments:} Future work should explore the use of more complex environments, such as CARLA, to evaluate the transfer learning approach in real-world scenarios. This will help assess the generalization of our findings and their applicability to real-world driving conditions.
-
-\end{itemize}
-
-\section{Final remarks}
-The significant reductions in training time (44.3\%) and simulation steps (53\%) achieved through our transfer learning approach demonstrate its potential to accelerate the development and deployment of autonomous driving systems across diverse environments. In resource-constrained development contexts, such efficiencies could substantially reduce computational costs and development timelines.
-
-Our experimental findings address the fundamental question of whether skills learned in one driving paradigm can be effectively leveraged to accelerate learning in another paradigm. The clear performance advantages observed in our transfer learning agents provide strong evidence that autonomous systems can indeed benefit from such knowledge transfer, mirroring the human ability to adapt prior driving experience to new road conditions.
-
-The quantitative metrics we established—transfer ratio, mastery, and pedagogy—provide a framework for evaluating knowledge transfer effectiveness in reinforcement learning applications beyond autonomous driving. These metrics offer a standardized approach for measuring how effectively knowledge from one domain can be applied to another, which is valuable for benchmarking different transfer learning techniques across various autonomous system applications. From a practical perspective, our work demonstrates that even with relatively straightforward transfer learning implementations, significant gains in training efficiency can be achieved.
-
-In conclusion, our research demonstrates that transfer learning represents a powerful approach for enhancing the adaptability and efficiency of autonomous driving systems. The empirical evidence presented supports the value of knowledge transfer between different driving paradigms, particularly in reducing the time resources required for training while maintaining high performance levels. This approach brings us closer to the goal of developing autonomous vehicles capable of seamlessly adapting to diverse driving conditions and environments, a critical capability for the deployment of autonomous robots.
-
+%

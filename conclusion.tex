@@ -1,21 +1,20 @@
 % $Id:conclusion.tex  $
 % !TEX root = main.tex
-\chapter{conclusion}
-This research investigated the application of transfer learning techniques to autonomous driving systems, focusing specifically on how knowledge from one driving paradigm (right-side driving) can be effectively transferred to another (left-side driving). Our experiments in controlled simulated environments yielded several important findings regarding the efficacy of transfer learning in accelerating adaptation to new driving conditions.
+\chapter{Conclusion and Future Work}
+This work presents an evaluation of the application of transfer learning techniques to autonomous driving systems, focusing specifically on how knowledge from one driving paradigm (right-side driving) can be effectively transferred to another (left-side driving). Our experiments in controlled simulated environments yielded several important findings regarding the efficacy of transfer learning in accelerating adaptation to new driving conditions.
 
-Our experiments clearly demonstrate that transfer learning significantly enhances training efficiency when autonomous agents must adapt to new driving paradigms. The initial attempts with the CARLA simulator highlighted the computational challenges of training complex driving agents, with high variance in rewards and suboptimal behavior even after 32 hours of training. This reinforced our decision to focus on the Gazebo ROS environment, which provided a more controlled setting for our experiments.
+Our experiments demonstrate that transfer learning significantly enhances training efficiency when autonomous agents must adapt to new driving paradigms. The initial attempts with the CARLA simulator highlighted the computational challenges of training complex driving agents, with high variance in rewards and suboptimal behavior even after 32 hours of training. This reinforced our decision to focus on the Gazebo ROS environment, which provided a more controlled setting for our experiments.
 
 In the Gazebo environment, we established a comprehensive benchmark by first training specialized expert agents for both right-side and left-side driving independently. The right-side expert required 149 steps (5.82 hours) to achieve competence with an average reward of 2621, while the left-side expert reached competence in 3.461 hours with an average reward of 2155. These baselines allowed us to quantitatively evaluate the benefits of transfer learning.
 
-The agent that utilized transfer learning techniques (implementing the gradient transfer equations) to transition from right-side to left-side driving achieved competence in just 1.929 hours, considerably faster than the 3.461 hours required by the agent learning left-side driving from scratch. This represents a $44.3\%$ reduction in training time, clearly validating our hypothesis that knowledge transfer accelerates adaptation to new driving conditions.
+The agent that utilized transfer learning techniques (implementing the gradient transfer equations) to transition from right-side driving to left-side driving achieved competence in just 1.929 hours, faster than the 3.461 hours required by the agent learning left-side driving from scratch. This represents a $44.3\%$ reduction in training time, clearly validating our hypothesis that knowledge transfer accelerates adaptation to new driving conditions.
 
-The transfer ratio metrics provide additional quantitative support for the effectiveness of our approach. The transfer learning agent achieved a transfer ratio of 0.9401, indicating substantial knowledge preservation between paradigms. This performance is notably superior to the agent that learned both paradigms simultaneously (transfer ratio of 1.1455), demonstrating that sequential knowledge transfer is more effective than concurrent learning for this particular task.
+The transfer ratio metrics provide additional quantitative support for the effectiveness of our approach. The transfer learning agent achieved a transfer ratio of 0.9401, indicating substantial knowledge preservation between paradigms. This performance is notably superior to the agent that learned both paradigms simultaneously (with a transfer ratio of 1.1455), demonstrating that sequential knowledge transfer is more effective than concurrent learning for this particular task.
 
-In terms of pedagogy, our transfer learning approach reduced the number of training steps required to achieve competence by approximately $53\%$ compared to training from scratch (70 steps versus 149 steps for the right-side expert). This reduction in required training iterations directly translates to more efficient use of computational resources and simulation time.
+In terms of pedagogy, our transfer learning approach reduced the number of training steps required to achieve competence when changing the driving side by approximately $53\%$ compared to training from scratch (70 steps versus 149 steps for the right-side expert). This reduction in required training iterations directly translates to more efficient use of computational resources and simulation time.
 
 The mastery metric revealed that the transfer learning agent maintained high performance levels (2788 reward), comparable to independently trained expert agents. This indicates that knowledge transfer did not compromise the quality of the learned behavior, which is crucial for safety-critical applications like autonomous driving. Interestingly, the left agent that learned from the right agent without formal transfer learning techniques achieved an even higher maximum reward (3150), suggesting that there might be additional benefits to exploring hybrid approaches.
 
-\section{Research Objectives Achievement}
 Revisiting our initial research objectives, we can conclude that:
 
 \begin{enumerate}
@@ -32,4 +31,35 @@ Revisiting our initial research objectives, we can conclude that:
     \item \textbf{Development of quantitative evaluation framework:} Through our definition and application of transfer ratio, mastery, and pedagogy metrics, we established a quantitative framework for evaluating transfer learning effectiveness in autonomous driving contexts, which can be applied to future research in this domain.
 \end{enumerate}
 
-The results clearly demonstrate that transfer learning can significantly improve the efficiency of training autonomous driving agents. The combination of reduced training time, fewer required simulation steps, and maintained or improved performance metrics validates our approach to leveraging knowledge transfer between different driving paradigms.
+In conclusion, our research demonstrates that transfer learning represents a powerful approach for enhancing the adaptability and efficiency of autonomous driving systems. The empirical evidence presented supports the value of knowledge transfer between different driving paradigms, particularly in reducing the time resources required for training while maintaining high performance levels. This approach brings us closer to the goal of developing autonomous vehicles capable of seamlessly adapting to diverse driving conditions and environments, a critical capability for the deployment of autonomous robots.
+
+\section{Limitations}
+Despite these promising results, several limitations were identified that warrant further investigation. As discussed in Section \ref{sec:threats}, our experimental design contained some inherent limitations:
+
+\begin{itemize}
+    \item \textbf{Experiment termination criterion:} By stopping experiments when agents successfully completed 10 consecutive runs without crashes, we prioritized safety over optimization. While this ensured reliable performance, it may have resulted in agents achieving basic competence rather than optimal performance. Future work should explore more sophisticated termination criteria that balance safety with performance optimization.
+
+    \item \textbf{Continuous expert demonstrations:} The persistent guidance from expert demonstrations throughout training may have created a dependency that limited agents' ability to discover novel or more efficient driving strategies. Future studies should implement a scheduled reduction in expert demonstrations to promote greater agent independence.
+    
+    \item \textbf{Environmental reward structure:} As noted in our threats to validity, the relatively small gap between optimal and suboptimal policy rewards (reward hacking problem) may have affected our transfer ratio metric. This highlights the need for more discriminative reward structures in future experiments.
+    
+    \item \textbf{Simulation complexity:} Our initial attempts with CARLA revealed the challenges of working with highly complex simulation environments. While Gazebo ROS provided a controlled environment suitable for our study, the simplified nature of this environment may limit the generalization of our findings to real-world driving scenarios.
+    
+\end{itemize}
+
+\section{Future Work}
+Based on our findings, future research directions should include:
+
+\begin{itemize}
+    \item \textbf{Leave learning agent the expert demonstrations:} Future experiments should keep the training of the agents but not the expert demonstrations, this way we can see how the agent performance can grow more than the expert agent and how the agent can learn to drive better than the expert agent. This will also help to see if the agent can learn to drive in a more efficient way than the expert agent.
+
+    \item \textbf{Use of more complex environments:} Future work should explore the use of more complex environments, such as CARLA, to evaluate the transfer learning approach in real-world scenarios. This will help assess the generalization of our findings and their applicability to real-world driving conditions.
+
+\end{itemize}
+
+\section{Final remarks}
+The significant reductions in training time (44.3\%) and simulation steps (53\%) achieved through our transfer learning approach demonstrate its potential to accelerate the development and deployment of autonomous driving systems across diverse environments. In resource-constrained development contexts, such efficiencies could substantially reduce computational costs and development timelines.
+
+Our experimental findings address the fundamental question of whether skills learned in one driving paradigm can be effectively leveraged to accelerate learning in another paradigm. The clear performance advantages observed in our transfer learning agents provide strong evidence that autonomous systems can indeed benefit from such knowledge transfer, mirroring the human ability to adapt prior driving experience to new road conditions.
+
+The quantitative metrics we established—transfer ratio, mastery, and pedagogy—provide a framework for evaluating knowledge transfer effectiveness in reinforcement learning applications beyond autonomous driving. These metrics offer a standardized approach for measuring how effectively knowledge from one domain can be applied to another, which is valuable for benchmarking different transfer learning techniques across various autonomous system applications. From a practical perspective, our work demonstrates that even with relatively straightforward transfer learning implementations, significant gains in training efficiency can be achieved.

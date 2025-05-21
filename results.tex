@@ -48,6 +48,7 @@ The left agent that started from right agent as baseline took 103 steps and 3.59
 
 \fref{fig:gazebo_right_left_avg} shows the transition between the expert agent and its continuation to drive on the other side of the road, We can see that retraining the agent to now drive on both sides, takes less steps than training the agent to drive on the left from scratch. Notice how the reward goes down again at the beginning of both training. Following the characteristic of the TD3 algorithm.
 
+\subsection{Learning behavior for both sides}
 The following agent was trained from scratch and starting in the right environment, however, every random number of episodes, the environment was change paradigms, this agent took 3.413 hours, and the maximum reward it achieved was 2311, the full training graph can be seen in \fref{fig:gazebo_random}.
 
 \begin{figure}[h]
@@ -59,6 +60,7 @@ The following agent was trained from scratch and starting in the right environme
 
 The agent was able to learn both paradigms, However, it took more time than the agents that only had to learn one paradigm, this is because the agent was trained from scratch and it had to learn both paradigms at the same time, which made it harder for the agent to learn.
 
+\subsection{Transfer learning agent}
 The next agent was trained from the expert right agent on the left environment, this time using \fref{eq: pre train gradient pi} and \fref{eq: pre train gradient Q} as part of the training process, this agent took 1.929 hours to train and the maximum reward it achieved was 2788, the full training can be seen in \fref{fig:gazebo_right_left_transfer}.
 
 \begin{figure}[h]
@@ -70,25 +72,29 @@ The next agent was trained from the expert right agent on the left environment, 
 
 We can put the last 4 results together, the right agent, the left agent that learned from the right expert agent with no transfer learning, the agent that learned both paradigms at the same time and the left agent that learned with transfer learning .
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
-    \includegraphics[width=0.68\textwidth]{figures/comparison_1.png}
+    \includegraphics[width=0.8\textwidth]{figures/comparison_1.png}
     \caption{Gazebo ROS comparison of the 4 agents.} 
     \label{fig:gazebo_transfer_learning_comparison}
 \end{figure}
+\FloatBarrier
 
 The data from the left agent that learned from the right agent but did not use transfer learning was transposed so it's steps start from 0 for the purpose of the comparison. We can see in \fref{fig:gazebo_right_left_transfer} that the agent was able to learn the new environment and achieve the same reward as the expert in less time and within less episodes, this is a clear indicator that the agent was able to transfer the knowledge from the right expert agent to the left environment even though the average reward is lower than the other agents, this may be caused because there was less experiments but we clearly can see how it learned faster than the other agents.
 
-In terms of time there is also a clear difference as shown in , the agent that learned with transfer learning took 1.6 hours to train which is less than the 8 hours that the agent that learned from scratch took, this is a clear indicator of how transfer learning can help to reduce the training time and the number of episodes needed to learn a new environment. 
+In terms of time there is also a clear difference as shown in \fref{fig:gazebo_transfer_learning_time_comparison}, the agent with transfer learning took $1.91$ hours to train which is $1.7$ times better than the $3.41$ hours it takes the agent that learns rom scratch takes, this is an indicator of how transfer learning can help to reduce the training time and the number of episodes needed to learn a new environment. 
 
 \begin{figure}[h]
    \centering
    \includegraphics[width=0.6\textwidth]{figures/time_comparison_1.png}
    \caption{Gazebo ROS comparison of the 4 agents in terms of time.} 
+   \label{fig:gazebo_transfer_learning_time_comparison}
 \end{figure}
 
 \subsection{Transfer learning metrics}
-We can replace the results from the experiments in Equations \ref{eq:tl_metrics} for each of the agents, for the right agent we have:
+Using the evaluation results in the transfer metrics put forward in Equations \ref{eq:tl_metrics}.
+
+For the agent expert to drive on the right side we have:
 
 \begin{equation}
    \centering
@@ -99,7 +105,7 @@ We can replace the results from the experiments in Equations \ref{eq:tl_metrics}
     \end{split}
 \end{equation}
 
-For the left agent that learned from the right agent with no transfer learning we have:
+For the agent that drive on the left-side from the right-side expert agent with no transfer learning we have:
 
 \begin{equation}
    \centering
@@ -110,7 +116,7 @@ For the left agent that learned from the right agent with no transfer learning w
     \end{split}
 \end{equation}
 
-For the agent that learned both paradigms at the same time we have:
+For the agent that learns both paradigms at the same time we have:
 
 \begin{equation}
    \centering
